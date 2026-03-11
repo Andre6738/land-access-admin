@@ -10,8 +10,19 @@ export class ActivityComponent implements OnInit {
   searches: any[] = [];
   loading = true;
   page = 0;
+  size = 50;
   totalPages = 0;
+  totalElements = 0;
+
+  // Filters
   filterEmail = '';
+  filterLpiCode = '';
+  filterSuccess: '' | 'true' | 'false' = '';
+  filterDeedsOffice = '';
+  filterDateFrom = '';
+  filterDateTo = '';
+
+  deedsOffices = ['Johannesburg', 'Pretoria', 'Cape Town', 'Pietermaritzburg', 'Bloemfontein'];
 
   constructor(private api: AdminApiService) {}
 
@@ -21,14 +32,21 @@ export class ActivityComponent implements OnInit {
 
   load(): void {
     this.loading = true;
-    const obs = this.filterEmail
-      ? this.api.getUserActivity(this.filterEmail, this.page)
-      : this.api.getActivity(this.page);
 
-    obs.subscribe({
+    this.api.getActivity({
+      page: this.page,
+      size: this.size,
+      email: this.filterEmail || undefined,
+      lpiCode: this.filterLpiCode || undefined,
+      success: this.filterSuccess === '' ? null : this.filterSuccess === 'true',
+      deedsOffice: this.filterDeedsOffice || undefined,
+      dateFrom: this.filterDateFrom || undefined,
+      dateTo: this.filterDateTo || undefined,
+    }).subscribe({
       next: (data) => {
         this.searches = data.content;
         this.totalPages = data.totalPages;
+        this.totalElements = data.totalElements;
         this.loading = false;
       },
       error: () => { this.loading = false; }
@@ -40,23 +58,36 @@ export class ActivityComponent implements OnInit {
     this.load();
   }
 
-  clearFilter(): void {
+  clearFilters(): void {
     this.filterEmail = '';
+    this.filterLpiCode = '';
+    this.filterSuccess = '';
+    this.filterDeedsOffice = '';
+    this.filterDateFrom = '';
+    this.filterDateTo = '';
     this.page = 0;
     this.load();
   }
 
-  prevPage(): void {
-    if (this.page > 0) {
-      this.page--;
+  get hasActiveFilters(): boolean {
+    return !!(this.filterEmail || this.filterLpiCode || this.filterSuccess
+      || this.filterDeedsOffice || this.filterDateFrom || this.filterDateTo);
+  }
+
+  goToPage(p: number): void {
+    if (p >= 0 && p < this.totalPages) {
+      this.page = p;
       this.load();
     }
   }
 
-  nextPage(): void {
-    if (this.page < this.totalPages - 1) {
-      this.page++;
-      this.load();
+  get visiblePages(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(0, this.page - 2);
+    const end = Math.min(this.totalPages - 1, this.page + 2);
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
     }
+    return pages;
   }
 }

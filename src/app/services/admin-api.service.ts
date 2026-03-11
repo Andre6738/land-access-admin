@@ -33,14 +33,26 @@ export class AdminApiService {
   }
 
   // ── Activity ──
-  getActivity(page = 0, size = 50): Observable<any> {
-    const params = new HttpParams().set('page', page).set('size', size);
+  getActivity(filters: {
+    page?: number;
+    size?: number;
+    email?: string;
+    lpiCode?: string;
+    success?: boolean | null;
+    deedsOffice?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  } = {}): Observable<any> {
+    let params = new HttpParams()
+      .set('page', filters.page ?? 0)
+      .set('size', filters.size ?? 50);
+    if (filters.email) params = params.set('email', filters.email);
+    if (filters.lpiCode) params = params.set('lpiCode', filters.lpiCode);
+    if (filters.success !== null && filters.success !== undefined) params = params.set('success', filters.success);
+    if (filters.deedsOffice) params = params.set('deedsOffice', filters.deedsOffice);
+    if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
+    if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
     return this.http.get(`${this.base}/activity`, { headers: this.headers, params });
-  }
-
-  getUserActivity(email: string, page = 0, size = 50): Observable<any> {
-    const params = new HttpParams().set('page', page).set('size', size);
-    return this.http.get(`${this.base}/activity/${encodeURIComponent(email)}`, { headers: this.headers, params });
   }
 
   // ── Config ──

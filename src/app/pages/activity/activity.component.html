@@ -2,12 +2,38 @@
   <h1>Search Activity</h1>
 
   <div class="filter-bar">
-    <input type="text" [(ngModel)]="filterEmail" placeholder="Filter by email..." (keyup.enter)="applyFilter()" />
-    <button class="btn-filter" (click)="applyFilter()">Filter</button>
-    <button *ngIf="filterEmail" class="btn-clear" (click)="clearFilter()">Clear</button>
+    <div class="filter-row">
+      <input type="text" [(ngModel)]="filterEmail" placeholder="Email..." (keyup.enter)="applyFilter()" />
+      <input type="text" [(ngModel)]="filterLpiCode" placeholder="LPI Code..." (keyup.enter)="applyFilter()" />
+      <select [(ngModel)]="filterDeedsOffice">
+        <option value="">All Deeds Offices</option>
+        <option *ngFor="let o of deedsOffices" [value]="o">{{ o }}</option>
+      </select>
+      <select [(ngModel)]="filterSuccess">
+        <option value="">All Results</option>
+        <option value="true">Success</option>
+        <option value="false">Failed</option>
+      </select>
+    </div>
+    <div class="filter-row">
+      <label class="date-label">
+        From
+        <input type="date" [(ngModel)]="filterDateFrom" />
+      </label>
+      <label class="date-label">
+        To
+        <input type="date" [(ngModel)]="filterDateTo" />
+      </label>
+      <button class="btn-filter" (click)="applyFilter()">Search</button>
+      <button *ngIf="hasActiveFilters" class="btn-clear" (click)="clearFilters()">Clear</button>
+    </div>
   </div>
 
   <div *ngIf="loading" class="loading">Loading activity...</div>
+
+  <div *ngIf="!loading && totalElements > 0" class="result-count">
+    {{ totalElements }} result{{ totalElements === 1 ? '' : 's' }} found
+  </div>
 
   <table *ngIf="!loading && searches.length" class="data-table">
     <thead>
@@ -24,7 +50,7 @@
     <tbody>
       <tr *ngFor="let s of searches">
         <td>{{ s.email }}</td>
-        <td>{{ s.lpiCode }}</td>
+        <td class="mono">{{ s.lpiCode }}</td>
         <td>{{ s.deedsOffice }}</td>
         <td>{{ s.status }}</td>
         <td>
@@ -41,8 +67,18 @@
   <div *ngIf="!loading && !searches.length" class="empty">No search activity found.</div>
 
   <div *ngIf="totalPages > 1" class="pagination">
-    <button [disabled]="page === 0" (click)="prevPage()">← Previous</button>
-    <span>Page {{ page + 1 }} of {{ totalPages }}</span>
-    <button [disabled]="page >= totalPages - 1" (click)="nextPage()">Next →</button>
+    <button [disabled]="page === 0" (click)="goToPage(0)" title="First page">«</button>
+    <button [disabled]="page === 0" (click)="goToPage(page - 1)">‹ Prev</button>
+
+    <button *ngFor="let p of visiblePages"
+            [class.active]="p === page"
+            (click)="goToPage(p)">
+      {{ p + 1 }}
+    </button>
+
+    <button [disabled]="page >= totalPages - 1" (click)="goToPage(page + 1)">Next ›</button>
+    <button [disabled]="page >= totalPages - 1" (click)="goToPage(totalPages - 1)" title="Last page">»</button>
+
+    <span class="page-info">Page {{ page + 1 }} of {{ totalPages }}</span>
   </div>
 </div>
