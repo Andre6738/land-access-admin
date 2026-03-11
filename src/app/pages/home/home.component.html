@@ -1,0 +1,107 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p class="subtitle">Overview of your WinServe platform</p>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <span>Loading dashboard...</span>
+  </div>
+
+  <div *ngIf="!loading">
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon users">&#128101;</div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ totalUsers }}</span>
+          <span class="kpi-label">Total Users</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon searches">&#128269;</div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ totalSearches }}</span>
+          <span class="kpi-label">Total Searches</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon success">&#9989;</div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ successRate }}%</span>
+          <span class="kpi-label">Success Rate</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon failed">&#10060;</div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ failedSearches }}</span>
+          <span class="kpi-label">Failed Searches</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity & Users -->
+    <div class="panels">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Recent Users</h2>
+          <a routerLink="/dashboard/users" class="view-all">View All &rarr;</a>
+        </div>
+        <table class="mini-table" *ngIf="recentUsers.length">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Credits</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let u of recentUsers">
+              <td>{{ u.email }}</td>
+              <td><span class="status-badge" [class]="u.status?.toLowerCase()">{{ u.status }}</span></td>
+              <td>{{ u.balanceCredits ?? 0 }}</td>
+              <td>{{ u.createdAt | date:'d MMM y' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="!recentUsers.length" class="empty-panel">No users yet.</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Recent Searches</h2>
+          <a routerLink="/dashboard/activity" class="view-all">View All &rarr;</a>
+        </div>
+        <table class="mini-table" *ngIf="recentSearches.length">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>LPI Code</th>
+              <th>Success</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of recentSearches">
+              <td>{{ s.email }}</td>
+              <td class="mono">{{ s.lpiCode }}</td>
+              <td>
+                <span class="bool-badge" [class.yes]="s.success" [class.no]="!s.success">
+                  {{ s.success ? 'Yes' : 'No' }}
+                </span>
+              </td>
+              <td>{{ s.createdAt | date:'d MMM y HH:mm' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="!recentSearches.length" class="empty-panel">No searches yet.</div>
+      </div>
+    </div>
+  </div>
+</div>

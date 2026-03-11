@@ -28,6 +28,15 @@ export class UsersComponent implements OnInit {
   grantAmount: number | null = null;
   grantReason = 'Admin grant';
 
+  // Confirm dialog
+  showConfirmDialog = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
+
+  // Toast
+  toasts: { message: string; type: string }[] = [];
+
   constructor(private api: AdminApiService) {}
 
   ngOnInit(): void {
@@ -90,12 +99,32 @@ export class UsersComponent implements OnInit {
   }
 
   ban(email: string): void {
-    if (!confirm(`Ban user ${email}?`)) return;
-    this.api.banUser(email).subscribe(() => this.loadUsers());
+    this.confirmTitle = 'Ban User';
+    this.confirmMessage = `Are you sure you want to ban ${email}? They will no longer be able to access the platform.`;
+    this.confirmAction = () => {
+      this.api.banUser(email).subscribe(() => {
+        this.showToast(`${email} has been banned`, 'success');
+        this.loadUsers();
+      });
+    };
+    this.showConfirmDialog = true;
   }
 
   unban(email: string): void {
-    this.api.unbanUser(email).subscribe(() => this.loadUsers());
+    this.confirmTitle = 'Unban User';
+    this.confirmMessage = `Restore access for ${email}?`;
+    this.confirmAction = () => {
+      this.api.unbanUser(email).subscribe(() => {
+        this.showToast(`${email} has been unbanned`, 'success');
+        this.loadUsers();
+      });
+    };
+    this.showConfirmDialog = true;
+  }
+
+  executeConfirm(): void {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirmDialog = false;
   }
 
   openGrant(email: string): void {
@@ -109,7 +138,40 @@ export class UsersComponent implements OnInit {
     if (!this.grantAmount || this.grantAmount <= 0) return;
     this.api.grantCredits(this.grantEmail, this.grantAmount, this.grantReason).subscribe(() => {
       this.showGrantDialog = false;
+      this.showToast(`${this.grantAmount} credits granted to ${this.grantEmail}`, 'success');
       this.loadUsers();
     });
+  }
+
+  showToast(message: string, type: string = 'info'): void {
+    const toast = { message, type };
+    this.toasts.push(toast);
+    setTimeout(() => {
+      const idx = this.toasts.indexOf(toast);
+      if (idx > -1) this.toasts.splice(idx, 1);
+    }, 4000);
+  }
+
+  exportCsv(): void {
+    const headers = ['Email', 'Status', 'Credits', 'Total Paid (ZAR)', 'Created'];
+    const rows = this.users.map(u => [
+      u.email,
+      u.status,
+      u.balanceCredits ?? 0,
+      ((u.totalMoneyPaidCents ?? 0) / 100).toFixed(2),
+      u.createdAt ? new Date(u.createdAt).toISOString().split('T')[0] : ''
+    ]);
+    this.downloadCsv([headers, ...rows], 'winserve-users');
+  }
+
+  private downloadCsv(data: any[][], filename: string): void {
+    const csv = data.map(row => row.map((v: any) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 }

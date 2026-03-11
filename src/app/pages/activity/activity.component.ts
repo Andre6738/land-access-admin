@@ -90,4 +90,29 @@ export class ActivityComponent implements OnInit {
     }
     return pages;
   }
+
+  exportCsv(): void {
+    const headers = ['Email', 'LPI Code', 'Deeds Office', 'Status', 'Success', 'Cost', 'Date'];
+    const rows = this.searches.map(s => [
+      s.email,
+      s.lpiCode,
+      s.deedsOffice,
+      s.status,
+      s.success ? 'Yes' : 'No',
+      s.costCredits ?? '',
+      s.createdAt ? new Date(s.createdAt).toISOString().replace('T', ' ').slice(0, 19) : ''
+    ]);
+    this.downloadCsv([headers, ...rows], 'winserve-activity');
+  }
+
+  private downloadCsv(data: any[][], filename: string): void {
+    const csv = data.map(row => row.map((v: any) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 }

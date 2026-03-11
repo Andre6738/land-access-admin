@@ -1,5 +1,10 @@
 <div class="page">
-  <h1>User Management</h1>
+  <div class="page-title-row">
+    <h1>User Management</h1>
+    <button *ngIf="users.length" class="btn-export" (click)="exportCsv()" title="Export current page to CSV">
+      &#128228; Export CSV
+    </button>
+  </div>
 
   <div class="filter-bar">
     <div class="filter-row">
@@ -96,4 +101,21 @@
       <button class="btn-confirm" (click)="confirmGrant()">Grant</button>
     </div>
   </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" *ngIf="showConfirmDialog" (click)="showConfirmDialog = false">
+  <div class="confirm-dialog" (click)="$event.stopPropagation()">
+    <h3>{{ confirmTitle }}</h3>
+    <p>{{ confirmMessage }}</p>
+    <div class="confirm-actions">
+      <button class="btn-cancel-confirm" (click)="showConfirmDialog = false">Cancel</button>
+      <button class="btn-danger-confirm" (click)="executeConfirm()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="toast-container">
+  <div *ngFor="let t of toasts" class="toast" [ngClass]="t.type">{{ t.message }}</div>
 </div>

@@ -1,5 +1,10 @@
 <div class="page">
-  <h1>Search Activity</h1>
+  <div class="page-title-row">
+    <h1>Search Activity</h1>
+    <button *ngIf="searches.length" class="btn-export" (click)="exportCsv()" title="Export current page to CSV">
+      &#128228; Export CSV
+    </button>
+  </div>
 
   <div class="filter-bar">
     <div class="filter-row">

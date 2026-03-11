@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { HomeComponent } from './pages/home/home.component';
 import { UsersComponent } from './pages/users/users.component';
 import { ConfigComponent } from './pages/config/config.component';
 import { ActivityComponent } from './pages/activity/activity.component';
@@ -16,6 +17,7 @@ import { ActivityComponent } from './pages/activity/activity.component';
     AppComponent,
     LoginComponent,
     DashboardComponent,
+    HomeComponent,
     UsersComponent,
     ConfigComponent,
     ActivityComponent

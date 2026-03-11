@@ -1,22 +1,37 @@
 <div class="admin-layout">
-  <nav class="sidebar">
+  <!-- Mobile header -->
+  <div class="mobile-header">
+    <button class="hamburger" (click)="toggleSidebar()">&#9776;</button>
+    <span class="mobile-brand">WinServe <span class="badge">Admin</span></span>
+  </div>
+
+  <!-- Overlay for mobile -->
+  <div class="sidebar-overlay" [class.open]="sidebarOpen" (click)="closeSidebar()"></div>
+
+  <nav class="sidebar" [class.open]="sidebarOpen">
     <div class="brand">
       <h2>WinServe</h2>
       <span class="badge">Admin</span>
     </div>
     <ul class="nav-links">
-      <li><a routerLink="/dashboard/users" routerLinkActive="active">
-        <span class="icon">👥</span> Users
+      <li><a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeSidebar()">
+        <span class="icon">&#127968;</span> Dashboard
       </a></li>
-      <li><a routerLink="/dashboard/config" routerLinkActive="active">
-        <span class="icon">⚙️</span> Configuration
+      <li><a routerLink="/dashboard/users" routerLinkActive="active" (click)="closeSidebar()">
+        <span class="icon">&#128101;</span> Users
       </a></li>
-      <li><a routerLink="/dashboard/activity" routerLinkActive="active">
-        <span class="icon">📊</span> Activity
+      <li><a routerLink="/dashboard/activity" routerLinkActive="active" (click)="closeSidebar()">
+        <span class="icon">&#128200;</span> Activity
+      </a></li>
+      <li><a routerLink="/dashboard/config" routerLinkActive="active" (click)="closeSidebar()">
+        <span class="icon">&#9881;</span> Configuration
       </a></li>
     </ul>
     <div class="sidebar-footer">
-      <button class="logout-btn" (click)="logout()">Sign Out</button>
+      <div class="version-info">WinServe Admin v1.0</div>
+      <button class="logout-btn" (click)="logout()">
+        <span class="icon">&#128682;</span> Sign Out
+      </button>
     </div>
   </nav>
 

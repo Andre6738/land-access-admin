@@ -1,6 +1,5 @@
 <div class="page">
   <h1>Configuration</h1>
-  <div *ngIf="saved" class="success-msg">{{ saved }}</div>
   <div *ngIf="loading" class="loading">Loading configuration...</div>
 
   <div *ngIf="!loading" class="config-cards">
@@ -24,4 +23,9 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Toasts -->
+<div class="toast-container">
+  <div *ngFor="let t of toasts" class="toast" [ngClass]="t.type">{{ t.message }}</div>
 </div>

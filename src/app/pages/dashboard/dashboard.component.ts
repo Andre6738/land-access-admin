@@ -8,7 +8,17 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
+  sidebarOpen = false;
+
   constructor(private auth: AuthService, private router: Router) {}
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen = false;
+  }
 
   logout(): void {
     this.auth.logout();

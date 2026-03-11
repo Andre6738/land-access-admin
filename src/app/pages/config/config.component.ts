@@ -10,7 +10,7 @@ export class ConfigComponent implements OnInit {
   vatRate: number | null = null;
   searchCost: number | null = null;
   loading = true;
-  saved = '';
+  toasts: { message: string; type: string }[] = [];
 
   constructor(private api: AdminApiService) {}
 
@@ -32,16 +32,23 @@ export class ConfigComponent implements OnInit {
   saveVat(): void {
     if (this.vatRate == null) return;
     this.api.updateVatRate(this.vatRate).subscribe(() => {
-      this.saved = 'VAT rate updated';
-      setTimeout(() => this.saved = '', 3000);
+      this.showToast('VAT rate updated successfully', 'success');
     });
   }
 
   saveSearchCost(): void {
     if (this.searchCost == null) return;
     this.api.updateSearchCost(this.searchCost).subscribe(() => {
-      this.saved = 'Search cost updated';
-      setTimeout(() => this.saved = '', 3000);
+      this.showToast('Search cost updated successfully', 'success');
     });
+  }
+
+  showToast(message: string, type: string = 'info'): void {
+    const toast = { message, type };
+    this.toasts.push(toast);
+    setTimeout(() => {
+      const idx = this.toasts.indexOf(toast);
+      if (idx > -1) this.toasts.splice(idx, 1);
+    }, 4000);
   }
 }
