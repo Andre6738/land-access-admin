@@ -17,6 +17,7 @@
         <div class="kpi-body">
           <span class="kpi-value">{{ totalUsers }}</span>
           <span class="kpi-label">Total Users</span>
+          <span class="kpi-desc">Registered accounts on the platform</span>
         </div>
       </div>
 
@@ -25,6 +26,7 @@
         <div class="kpi-body">
           <span class="kpi-value">{{ totalSearches }}</span>
           <span class="kpi-label">Total Searches</span>
+          <span class="kpi-desc">Title deed searches performed by all users</span>
         </div>
       </div>
 
@@ -33,6 +35,7 @@
         <div class="kpi-body">
           <span class="kpi-value">{{ successRate }}%</span>
           <span class="kpi-label">Success Rate</span>
+          <span class="kpi-desc">Percentage of searches that returned owner data ({{ successfulSearches }} of {{ totalSearches }})</span>
         </div>
       </div>
 
@@ -41,6 +44,7 @@
         <div class="kpi-body">
           <span class="kpi-value">{{ failedSearches }}</span>
           <span class="kpi-label">Failed Searches</span>
+          <span class="kpi-desc">Searches where the deeds office returned no results</span>
         </div>
       </div>
     </div>

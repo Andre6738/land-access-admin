@@ -43,10 +43,16 @@ export class ActivityComponent implements OnInit {
       dateFrom: this.filterDateFrom || undefined,
       dateTo: this.filterDateTo || undefined,
     }).subscribe({
-      next: (data) => {
-        this.searches = data.content;
-        this.totalPages = data.totalPages;
-        this.totalElements = data.totalElements;
+      next: (data: any) => {
+        if (Array.isArray(data)) {
+          this.searches = data;
+          this.totalElements = data.length;
+          this.totalPages = 1;
+        } else {
+          this.searches = data.content;
+          this.totalPages = data.totalPages;
+          this.totalElements = data.totalElements;
+        }
         this.loading = false;
       },
       error: () => { this.loading = false; }

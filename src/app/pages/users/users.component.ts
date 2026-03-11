@@ -22,8 +22,9 @@ export class UsersComponent implements OnInit {
 
   statuses = ['ACTIVE', 'BANNED', 'DEACTIVATION_PENDING', 'DELETE_PENDING'];
 
-  // Grant credits dialog
+  // Grant/Deduct credits dialog
   showGrantDialog = false;
+  grantMode: 'grant' | 'deduct' = 'grant';
   grantEmail = '';
   grantAmount: number | null = null;
   grantReason = 'Admin grant';
@@ -54,9 +55,15 @@ export class UsersComponent implements OnInit {
       dateTo: this.filterDateTo || undefined,
     }).subscribe({
       next: (data: any) => {
-        this.users = data.content;
-        this.totalPages = data.totalPages;
-        this.totalElements = data.totalElements;
+        if (Array.isArray(data)) {
+          this.users = data;
+          this.totalElements = data.length;
+          this.totalPages = 1;
+        } else {
+          this.users = data.content;
+          this.totalPages = data.totalPages;
+          this.totalElements = data.totalElements;
+        }
         this.loading = false;
       },
       error: () => { this.loading = false; }
@@ -128,18 +135,34 @@ export class UsersComponent implements OnInit {
   }
 
   openGrant(email: string): void {
+    this.grantMode = 'grant';
     this.grantEmail = email;
     this.grantAmount = null;
     this.grantReason = 'Admin grant';
     this.showGrantDialog = true;
   }
 
+  openDeduct(email: string): void {
+    this.grantMode = 'deduct';
+    this.grantEmail = email;
+    this.grantAmount = null;
+    this.grantReason = 'Admin deduction';
+    this.showGrantDialog = true;
+  }
+
   confirmGrant(): void {
     if (!this.grantAmount || this.grantAmount <= 0) return;
-    this.api.grantCredits(this.grantEmail, this.grantAmount, this.grantReason).subscribe(() => {
-      this.showGrantDialog = false;
-      this.showToast(`${this.grantAmount} credits granted to ${this.grantEmail}`, 'success');
-      this.loadUsers();
+    const amount = this.grantMode === 'deduct' ? -this.grantAmount : this.grantAmount;
+    this.api.grantCredits(this.grantEmail, amount, this.grantReason).subscribe({
+      next: () => {
+        this.showGrantDialog = false;
+        const verb = this.grantMode === 'deduct' ? 'deducted from' : 'granted to';
+        this.showToast(`${this.grantAmount} credits ${verb} ${this.grantEmail}`, 'success');
+        this.loadUsers();
+      },
+      error: () => {
+        this.showToast(`Failed to ${this.grantMode} credits`, 'error');
+      }
     });
   }
 

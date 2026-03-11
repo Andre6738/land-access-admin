@@ -53,7 +53,8 @@
         <td>R {{ ((u.totalMoneyPaidCents ?? 0) / 100).toFixed(2) }}</td>
         <td>{{ u.createdAt | date:'d MMM y' }}</td>
         <td class="actions">
-          <button class="btn-small btn-grant" (click)="openGrant(u.email)">Grant Credits</button>
+          <button class="btn-small btn-grant" (click)="openGrant(u.email)">Grant</button>
+          <button class="btn-small btn-deduct" (click)="openDeduct(u.email)">Deduct</button>
           <button *ngIf="u.status !== 'BANNED'" class="btn-small btn-ban" (click)="ban(u.email)">Ban</button>
           <button *ngIf="u.status === 'BANNED'" class="btn-small btn-unban" (click)="unban(u.email)">Unban</button>
         </td>
@@ -80,10 +81,10 @@
   </div>
 </div>
 
-<!-- Grant Credits Dialog -->
+<!-- Grant/Deduct Credits Dialog -->
 <div class="dialog-overlay" *ngIf="showGrantDialog" (click)="showGrantDialog = false">
   <div class="dialog" (click)="$event.stopPropagation()">
-    <h2>Grant Credits</h2>
+    <h2>{{ grantMode === 'deduct' ? 'Deduct Credits' : 'Grant Credits' }}</h2>
     <p>User: <strong>{{ grantEmail }}</strong></p>
 
     <div class="form-group">
@@ -98,7 +99,9 @@
 
     <div class="dialog-actions">
       <button class="btn-cancel" (click)="showGrantDialog = false">Cancel</button>
-      <button class="btn-confirm" (click)="confirmGrant()">Grant</button>
+      <button class="btn-confirm" [class.btn-deduct-confirm]="grantMode === 'deduct'" (click)="confirmGrant()">
+        {{ grantMode === 'deduct' ? 'Deduct' : 'Grant' }}
+      </button>
     </div>
   </div>
 </div>

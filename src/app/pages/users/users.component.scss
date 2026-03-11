@@ -178,6 +178,7 @@
 }
 
 .btn-grant { background: #0f3460; color: #fff; }
+.btn-deduct { background: #e67e22; color: #fff; }
 .btn-ban { background: #e94560; color: #fff; }
 .btn-unban { background: #28a745; color: #fff; }
 
@@ -263,6 +264,11 @@
   font-weight: 600;
 
   &:hover { background: #1a4a7a; }
+
+  &.btn-deduct-confirm {
+    background: #e67e22;
+    &:hover { background: #cf6d17; }
+  }
 }
 
 .pagination {

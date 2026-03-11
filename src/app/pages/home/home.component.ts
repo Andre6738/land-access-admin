@@ -32,14 +32,34 @@ export class HomeComponent implements OnInit {
       failedSearches: this.api.getActivity({ page: 0, size: 1, success: false }),
     }).subscribe({
       next: (data) => {
-        this.totalUsers = data.users.totalElements;
-        this.recentUsers = data.users.content;
+        // Handle both array and Page responses
+        if (Array.isArray(data.users)) {
+          this.recentUsers = data.users.slice(0, 5);
+          this.totalUsers = data.users.length;
+        } else {
+          this.recentUsers = data.users.content;
+          this.totalUsers = data.users.totalElements;
+        }
 
-        this.totalSearches = data.allSearches.totalElements;
-        this.recentSearches = data.allSearches.content;
+        if (Array.isArray(data.allSearches)) {
+          this.recentSearches = data.allSearches.slice(0, 5);
+          this.totalSearches = data.allSearches.length;
+        } else {
+          this.recentSearches = data.allSearches.content;
+          this.totalSearches = data.allSearches.totalElements;
+        }
 
-        this.successfulSearches = data.successSearches.totalElements;
-        this.failedSearches = data.failedSearches.totalElements;
+        if (Array.isArray(data.successSearches)) {
+          this.successfulSearches = data.successSearches.length;
+        } else {
+          this.successfulSearches = data.successSearches.totalElements;
+        }
+
+        if (Array.isArray(data.failedSearches)) {
+          this.failedSearches = data.failedSearches.length;
+        } else {
+          this.failedSearches = data.failedSearches.totalElements;
+        }
 
         this.loading = false;
       },
