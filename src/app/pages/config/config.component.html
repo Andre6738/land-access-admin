@@ -1,0 +1,27 @@
+<div class="page">
+  <h1>Configuration</h1>
+  <div *ngIf="saved" class="success-msg">{{ saved }}</div>
+  <div *ngIf="loading" class="loading">Loading configuration...</div>
+
+  <div *ngIf="!loading" class="config-cards">
+    <div class="config-card">
+      <h3>VAT Rate (%)</h3>
+      <p class="description">Current South African VAT rate applied to credit purchases.</p>
+      <div class="input-row">
+        <input type="number" [(ngModel)]="vatRate" min="0" max="100" step="0.5" />
+        <span class="unit">%</span>
+        <button class="btn-save" (click)="saveVat()">Save</button>
+      </div>
+    </div>
+
+    <div class="config-card">
+      <h3>Search Cost (Credits)</h3>
+      <p class="description">Number of credits deducted per title deed search.</p>
+      <div class="input-row">
+        <input type="number" [(ngModel)]="searchCost" min="0" />
+        <span class="unit">credits</span>
+        <button class="btn-save" (click)="saveSearchCost()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

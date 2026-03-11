@@ -1,0 +1,59 @@
+<div class="page">
+  <h1>User Management</h1>
+
+  <div *ngIf="loading" class="loading">Loading users...</div>
+
+  <table *ngIf="!loading && users.length" class="data-table">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Credits</th>
+        <th>Total Paid</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of users">
+        <td>{{ u.email }}</td>
+        <td>
+          <span class="status-badge" [class]="u.status?.toLowerCase()">{{ u.status }}</span>
+        </td>
+        <td>{{ u.balanceCredits ?? 0 }}</td>
+        <td>R {{ ((u.totalMoneyPaidCents ?? 0) / 100).toFixed(2) }}</td>
+        <td>{{ u.createdAt | date:'d MMM y' }}</td>
+        <td class="actions">
+          <button class="btn-small btn-grant" (click)="openGrant(u.email)">Grant Credits</button>
+          <button *ngIf="u.status !== 'BANNED'" class="btn-small btn-ban" (click)="ban(u.email)">Ban</button>
+          <button *ngIf="u.status === 'BANNED'" class="btn-small btn-unban" (click)="unban(u.email)">Unban</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !users.length" class="empty">No users found.</div>
+</div>
+
+<!-- Grant Credits Dialog -->
+<div class="dialog-overlay" *ngIf="showGrantDialog" (click)="showGrantDialog = false">
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <h2>Grant Credits</h2>
+    <p>User: <strong>{{ grantEmail }}</strong></p>
+
+    <div class="form-group">
+      <label>Amount</label>
+      <input type="number" [(ngModel)]="grantAmount" min="1" placeholder="Number of credits" />
+    </div>
+
+    <div class="form-group">
+      <label>Reason</label>
+      <input type="text" [(ngModel)]="grantReason" placeholder="Reason for adjustment" />
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn-cancel" (click)="showGrantDialog = false">Cancel</button>
+      <button class="btn-confirm" (click)="confirmGrant()">Grant</button>
+    </div>
+  </div>
+</div>

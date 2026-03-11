@@ -1,0 +1,85 @@
+.page {
+  h1 {
+    margin: 0 0 1.5rem;
+    color: #1a1a2e;
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.success-msg {
+  background: #d4edda;
+  color: #155724;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+
+.config-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 500px;
+}
+
+.config-card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  h3 {
+    margin: 0 0 0.3rem;
+    color: #1a1a2e;
+  }
+
+  .description {
+    color: #666;
+    font-size: 0.85rem;
+    margin: 0 0 1rem;
+  }
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  input {
+    width: 120px;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+
+    &:focus {
+      outline: none;
+      border-color: #0f3460;
+    }
+  }
+
+  .unit {
+    color: #666;
+    font-size: 0.85rem;
+  }
+}
+
+.btn-save {
+  padding: 0.5rem 1.2rem;
+  background: #0f3460;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-left: auto;
+
+  &:hover { background: #1a4a7a; }
+}

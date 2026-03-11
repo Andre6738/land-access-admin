@@ -1,0 +1,48 @@
+<div class="page">
+  <h1>Search Activity</h1>
+
+  <div class="filter-bar">
+    <input type="text" [(ngModel)]="filterEmail" placeholder="Filter by email..." (keyup.enter)="applyFilter()" />
+    <button class="btn-filter" (click)="applyFilter()">Filter</button>
+    <button *ngIf="filterEmail" class="btn-clear" (click)="clearFilter()">Clear</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading activity...</div>
+
+  <table *ngIf="!loading && searches.length" class="data-table">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>LPI Code</th>
+        <th>Deeds Office</th>
+        <th>Status</th>
+        <th>Success</th>
+        <th>Cost</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of searches">
+        <td>{{ s.email }}</td>
+        <td>{{ s.lpiCode }}</td>
+        <td>{{ s.deedsOffice }}</td>
+        <td>{{ s.status }}</td>
+        <td>
+          <span class="bool-badge" [class.yes]="s.success" [class.no]="!s.success">
+            {{ s.success ? 'Yes' : 'No' }}
+          </span>
+        </td>
+        <td>{{ s.costCredits ?? '-' }}</td>
+        <td>{{ s.createdAt | date:'d MMM y HH:mm' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !searches.length" class="empty">No search activity found.</div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button [disabled]="page === 0" (click)="prevPage()">← Previous</button>
+    <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+    <button [disabled]="page >= totalPages - 1" (click)="nextPage()">Next →</button>
+  </div>
+</div>
