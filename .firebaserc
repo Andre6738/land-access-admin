@@ -1,5 +1,12 @@
 {
   "projects": {
-    "default": "winserve-admin"
+    "default": "winserve-5b277"
+  },
+  "targets": {
+    "winserve-5b277": {
+      "hosting": {
+        "admin": ["winserve-admin"]
+      }
+    }
   }
 }
