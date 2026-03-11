@@ -1,7 +1,31 @@
 <div class="page">
   <h1>User Management</h1>
 
+  <div class="filter-bar">
+    <div class="filter-row">
+      <input type="text" [(ngModel)]="filterEmail" placeholder="Email..." (keyup.enter)="applyFilter()" />
+      <select [(ngModel)]="filterStatus">
+        <option value="">All Statuses</option>
+        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+      </select>
+      <label class="date-label">
+        From
+        <input type="date" [(ngModel)]="filterDateFrom" />
+      </label>
+      <label class="date-label">
+        To
+        <input type="date" [(ngModel)]="filterDateTo" />
+      </label>
+      <button class="btn-filter" (click)="applyFilter()">Search</button>
+      <button *ngIf="hasActiveFilters" class="btn-clear" (click)="clearFilters()">Clear</button>
+    </div>
+  </div>
+
   <div *ngIf="loading" class="loading">Loading users...</div>
+
+  <div *ngIf="!loading && totalElements > 0" class="result-count">
+    {{ totalElements }} user{{ totalElements === 1 ? '' : 's' }} found
+  </div>
 
   <table *ngIf="!loading && users.length" class="data-table">
     <thead>
@@ -33,6 +57,22 @@
   </table>
 
   <div *ngIf="!loading && !users.length" class="empty">No users found.</div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button [disabled]="page === 0" (click)="goToPage(0)" title="First page">«</button>
+    <button [disabled]="page === 0" (click)="goToPage(page - 1)">‹ Prev</button>
+
+    <button *ngFor="let p of visiblePages"
+            [class.active]="p === page"
+            (click)="goToPage(p)">
+      {{ p + 1 }}
+    </button>
+
+    <button [disabled]="page >= totalPages - 1" (click)="goToPage(page + 1)">Next ›</button>
+    <button [disabled]="page >= totalPages - 1" (click)="goToPage(totalPages - 1)" title="Last page">»</button>
+
+    <span class="page-info">Page {{ page + 1 }} of {{ totalPages }}</span>
+  </div>
 </div>
 
 <!-- Grant Credits Dialog -->
