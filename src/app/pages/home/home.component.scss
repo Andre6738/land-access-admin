@@ -70,13 +70,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
   flex-shrink: 0;
 
-  &.users { background: #e8eaf6; }
-  &.searches { background: #e3f2fd; }
-  &.success { background: #e8f5e9; }
-  &.failed { background: #fce4ec; }
+  &.users { background: #e8eaf6; color: #3949ab; }
+  &.searches { background: #e3f2fd; color: #1565c0; }
+  &.success { background: #e8f5e9; color: #2e7d32; }
+  &.failed { background: #fce4ec; color: #c62828; }
 }
 
 .kpi-body {
