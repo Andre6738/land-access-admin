@@ -12,6 +12,7 @@ import { UsersComponent } from './pages/users/users.component';
 import { ConfigComponent } from './pages/config/config.component';
 import { ActivityComponent } from './pages/activity/activity.component';
 import { GenerationsComponent } from './pages/generations/generations.component';
+import { BulkUploadsComponent } from './pages/bulk-uploads/bulk-uploads.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { GenerationsComponent } from './pages/generations/generations.component'
     UsersComponent,
     ConfigComponent,
     ActivityComponent,
-    GenerationsComponent
+    GenerationsComponent,
+    BulkUploadsComponent
   ],
   imports: [
     BrowserModule,

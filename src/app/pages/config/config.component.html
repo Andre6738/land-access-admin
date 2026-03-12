@@ -1,5 +1,10 @@
 <div class="page">
-  <h1>Configuration</h1>
+  <div class="page-title-row">
+    <div class="title-left">
+      <button class="btn-back" routerLink="/dashboard">← Dashboard</button>
+      <h1>Configuration</h1>
+    </div>
+  </div>
   <div *ngIf="loading" class="loading">Loading configuration...</div>
 
   <div *ngIf="!loading" class="config-cards">

@@ -134,4 +134,23 @@ export class AdminApiService {
     if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
     return this.http.get(`${this.base}/generation-history`, { headers: this.headers, params });
   }
+
+  // ── Bulk Uploads ──
+  getBulkUploads(filters: {
+    page?: number;
+    size?: number;
+    email?: string;
+    status?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  } = {}): Observable<any> {
+    let params = new HttpParams()
+      .set('page', filters.page ?? 0)
+      .set('size', filters.size ?? 50);
+    if (filters.email) params = params.set('email', filters.email);
+    if (filters.status) params = params.set('status', filters.status);
+    if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
+    if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
+    return this.http.get(`${this.base}/bulk-uploads`, { headers: this.headers, params });
+  }
 }
