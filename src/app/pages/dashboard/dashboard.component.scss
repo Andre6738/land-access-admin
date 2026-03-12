@@ -50,8 +50,10 @@
     transition: all 0.2s;
     font-size: 0.95rem;
 
-    .icon {
-      font-size: 1.1rem;
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
     }
 
     &:hover {
@@ -94,7 +96,10 @@
   justify-content: center;
   gap: 0.4rem;
 
-  .icon { font-size: 1rem; }
+  .nav-icon {
+    width: 18px;
+    height: 18px;
+  }
 
   &:hover {
     background: rgba(233, 69, 96, 0.15);
