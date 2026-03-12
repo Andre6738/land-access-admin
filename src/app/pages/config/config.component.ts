@@ -8,6 +8,12 @@ interface TemplateCostRow {
   saving: boolean;
 }
 
+interface TemplateGroup {
+  label: string;
+  rows: TemplateCostRow[];
+  collapsed: boolean;
+}
+
 @Component({
   selector: 'app-config',
   templateUrl: './config.component.html',
@@ -18,6 +24,7 @@ export class ConfigComponent implements OnInit {
   searchCost: number | null = null;
   defaultTemplateCost: number | null = null;
   templateCosts: TemplateCostRow[] = [];
+  templateGroups: TemplateGroup[] = [];
   loading = true;
   toasts: { message: string; type: string }[] = [];
 
@@ -33,10 +40,7 @@ export class ConfigComponent implements OnInit {
       this.vatRate = r.ratePercent;
       this.api.getSearchCost().subscribe(c => {
         this.searchCost = c.cost;
-        this.api.getDefaultTemplateCost().subscribe(d => {
-          this.defaultTemplateCost = d.cost;
-          this.loadTemplatePricing();
-        });
+        this.loadTemplatePricing();
       });
     });
   }
@@ -44,15 +48,39 @@ export class ConfigComponent implements OnInit {
   private loadTemplatePricing(): void {
     this.api.getTemplateList().subscribe(templates => {
       this.api.getTemplatePricing().subscribe(overrides => {
-        this.templateCosts = templates.map(path => ({
-          path,
-          name: path.replace(/\.docx$/i, ''),
-          cost: overrides[path] ?? this.defaultTemplateCost ?? 1,
-          saving: false,
-        }));
-        this.loading = false;
+        this.api.getDefaultTemplateCost().subscribe(d => {
+          const defaultCost = d.cost ?? 1;
+          this.templateCosts = templates.map(path => ({
+            path,
+            name: path.replace(/\.docx$/i, ''),
+            cost: overrides[path] ?? defaultCost,
+            saving: false,
+          }));
+          this.buildGroups();
+          this.loading = false;
+        });
       });
     });
+  }
+
+  private buildGroups(): void {
+    const groupMap = new Map<string, TemplateCostRow[]>();
+    const order = ['Afrikaans', 'English', 'IPP'];
+
+    for (const row of this.templateCosts) {
+      const slashIdx = row.name.indexOf('/');
+      const groupKey = slashIdx > 0 ? row.name.substring(0, slashIdx) : 'Other';
+      if (!groupMap.has(groupKey)) groupMap.set(groupKey, []);
+      groupMap.get(groupKey)!.push(row);
+    }
+
+    this.templateGroups = [...groupMap.entries()]
+      .sort(([a], [b]) => {
+        const ai = order.indexOf(a);
+        const bi = order.indexOf(b);
+        return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+      })
+      .map(([label, rows]) => ({ label, rows, collapsed: false }));
   }
 
   saveVat(): void {
@@ -66,15 +94,6 @@ export class ConfigComponent implements OnInit {
     if (this.searchCost == null) return;
     this.api.updateSearchCost(this.searchCost).subscribe(() => {
       this.showToast('Search cost updated successfully', 'success');
-    });
-  }
-
-  saveDefaultTemplateCost(): void {
-    if (this.defaultTemplateCost == null) return;
-    this.api.updateDefaultTemplateCost(this.defaultTemplateCost).subscribe(() => {
-      this.showToast('Default template cost updated', 'success');
-      // Refresh per-template costs that are using the default
-      this.loadTemplatePricing();
     });
   }
 

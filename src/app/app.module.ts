@@ -11,6 +11,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { UsersComponent } from './pages/users/users.component';
 import { ConfigComponent } from './pages/config/config.component';
 import { ActivityComponent } from './pages/activity/activity.component';
+import { GenerationsComponent } from './pages/generations/generations.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ActivityComponent } from './pages/activity/activity.component';
     HomeComponent,
     UsersComponent,
     ConfigComponent,
-    ActivityComponent
+    ActivityComponent,
+    GenerationsComponent
   ],
   imports: [
     BrowserModule,

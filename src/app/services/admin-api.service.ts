@@ -115,4 +115,23 @@ export class AdminApiService {
       headers: new HttpHeaders({ Authorization: `Basic ${creds}` })
     });
   }
+
+  // ── Generation History ──
+  getGenerationHistory(filters: {
+    page?: number;
+    size?: number;
+    email?: string;
+    lpiCode?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  } = {}): Observable<any> {
+    let params = new HttpParams()
+      .set('page', filters.page ?? 0)
+      .set('size', filters.size ?? 50);
+    if (filters.email) params = params.set('email', filters.email);
+    if (filters.lpiCode) params = params.set('lpiCode', filters.lpiCode);
+    if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
+    if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
+    return this.http.get(`${this.base}/generation-history`, { headers: this.headers, params });
+  }
 }

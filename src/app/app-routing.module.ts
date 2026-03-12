@@ -6,6 +6,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { UsersComponent } from './pages/users/users.component';
 import { ConfigComponent } from './pages/config/config.component';
 import { ActivityComponent } from './pages/activity/activity.component';
+import { GenerationsComponent } from './pages/generations/generations.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
       { path: 'users', component: UsersComponent },
       { path: 'config', component: ConfigComponent },
       { path: 'activity', component: ActivityComponent },
+      { path: 'generations', component: GenerationsComponent },
     ]
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },

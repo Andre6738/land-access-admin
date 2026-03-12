@@ -1,7 +1,7 @@
 <div class="page">
   <div class="page-title-row">
-    <h1>Search Activity</h1>
-    <button *ngIf="searches.length" class="btn-export" (click)="exportCsv()" title="Export current page to CSV">
+    <h1>Generation History</h1>
+    <button *ngIf="records.length" class="btn-export" (click)="exportCsv()" title="Export current page to CSV">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Export CSV
     </button>
@@ -11,15 +11,6 @@
     <div class="filter-row">
       <input type="text" [(ngModel)]="filterEmail" placeholder="Email..." (keyup.enter)="applyFilter()" />
       <input type="text" [(ngModel)]="filterLpiCode" placeholder="LPI Code..." (keyup.enter)="applyFilter()" />
-      <select [(ngModel)]="filterDeedsOffice">
-        <option value="">All Deeds Offices</option>
-        <option *ngFor="let o of deedsOffices" [value]="o">{{ o }}</option>
-      </select>
-      <select [(ngModel)]="filterSuccess">
-        <option value="">All Results</option>
-        <option value="true">Success</option>
-        <option value="false">Failed</option>
-      </select>
     </div>
     <div class="filter-row">
       <label class="date-label">
@@ -35,42 +26,36 @@
     </div>
   </div>
 
-  <div *ngIf="loading" class="loading">Loading activity...</div>
+  <div *ngIf="loading" class="loading">Loading generation history...</div>
 
   <div *ngIf="!loading && totalElements > 0" class="result-count">
     {{ totalElements }} result{{ totalElements === 1 ? '' : 's' }} found
   </div>
 
-  <table *ngIf="!loading && searches.length" class="data-table">
+  <table *ngIf="!loading && records.length" class="data-table">
     <thead>
       <tr>
         <th>Email</th>
         <th>LPI Code</th>
-        <th>Deeds Office</th>
-        <th>Status</th>
-        <th>Success</th>
-        <th>Cost</th>
+        <th>Templates</th>
+        <th>Docs</th>
+        <th>Credits</th>
         <th>Date</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let s of searches">
-        <td>{{ s.email }}</td>
-        <td class="mono">{{ s.lpiCode }}</td>
-        <td>{{ s.deedsOffice }}</td>
-        <td>{{ s.status }}</td>
-        <td>
-          <span class="bool-badge" [class.yes]="s.success" [class.no]="!s.success">
-            {{ s.success ? 'Yes' : 'No' }}
-          </span>
-        </td>
-        <td>{{ s.costCredits ?? '-' }}</td>
-        <td>{{ s.createdAt | date:'d MMM y HH:mm' }}</td>
+      <tr *ngFor="let r of records">
+        <td>{{ r.email }}</td>
+        <td class="mono">{{ r.lpiCode ?? '-' }}</td>
+        <td class="templates-cell" [title]="r.templateNames">{{ r.templateNames }}</td>
+        <td>{{ r.documentCount }}</td>
+        <td>{{ r.creditsCharged }}</td>
+        <td>{{ r.createdAt | date:'d MMM y HH:mm' }}</td>
       </tr>
     </tbody>
   </table>
 
-  <div *ngIf="!loading && !searches.length" class="empty">No search activity found.</div>
+  <div *ngIf="!loading && !records.length" class="empty">No generation history found.</div>
 
   <div *ngIf="totalPages > 1" class="pagination">
     <button [disabled]="page === 0" (click)="goToPage(0)" title="First page">«</button>
