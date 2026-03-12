@@ -87,4 +87,32 @@ export class AdminApiService {
     const params = new HttpParams().set('cost', cost);
     return this.http.put(`${this.base}/config/search-cost`, null, { headers: this.headers, params });
   }
+
+  // ── Template pricing ──
+  getDefaultTemplateCost(): Observable<{ cost: number }> {
+    return this.http.get<{ cost: number }>(`${this.base}/config/template-cost-default`, { headers: this.headers });
+  }
+
+  updateDefaultTemplateCost(cost: number): Observable<any> {
+    const params = new HttpParams().set('cost', cost);
+    return this.http.put(`${this.base}/config/template-cost-default`, null, { headers: this.headers, params });
+  }
+
+  getTemplatePricing(): Observable<{ [path: string]: number }> {
+    return this.http.get<{ [path: string]: number }>(`${this.base}/config/template-pricing`, { headers: this.headers });
+  }
+
+  updateTemplatePricing(templatePath: string, cost: number): Observable<any> {
+    const params = new HttpParams().set('templatePath', templatePath).set('cost', cost);
+    return this.http.put(`${this.base}/config/template-pricing`, null, { headers: this.headers, params });
+  }
+
+  // ── Templates list (from deeds API) ──
+  getTemplateList(): Observable<string[]> {
+    const apiBase = this.base.replace('/api/admin', '');
+    const creds = btoa(`${environment.apiAdminUser}:${environment.apiAdminPass}`);
+    return this.http.get<string[]>(`${apiBase}/api/deeds/templates`, {
+      headers: new HttpHeaders({ Authorization: `Basic ${creds}` })
+    });
+  }
 }

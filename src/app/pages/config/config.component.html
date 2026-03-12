@@ -22,6 +22,41 @@
         <button class="btn-save" (click)="saveSearchCost()">Save</button>
       </div>
     </div>
+
+    <div class="config-card">
+      <h3>Default Document Cost (Credits)</h3>
+      <p class="description">Default credit cost per document when generating templates. Individual templates can be overridden below.</p>
+      <div class="input-row">
+        <input type="number" [(ngModel)]="defaultTemplateCost" min="0" />
+        <span class="unit">credits</span>
+        <button class="btn-save" (click)="saveDefaultTemplateCost()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Per-template pricing ── -->
+  <div *ngIf="!loading && templateCosts.length > 0" class="template-pricing-section">
+    <h2>Template Pricing</h2>
+    <p class="section-description">Set individual credit costs per document template. Changes override the default cost above.</p>
+
+    <div class="pricing-table">
+      <div class="pricing-header">
+        <span class="col-name">Template</span>
+        <span class="col-cost">Cost (Credits)</span>
+        <span class="col-action"></span>
+      </div>
+      <div *ngFor="let row of templateCosts" class="pricing-row">
+        <span class="col-name">{{ row.name }}</span>
+        <span class="col-cost">
+          <input type="number" [(ngModel)]="row.cost" min="0" />
+        </span>
+        <span class="col-action">
+          <button class="btn-save btn-sm" (click)="saveTemplateCost(row)" [disabled]="row.saving">
+            {{ row.saving ? 'Saving…' : 'Save' }}
+          </button>
+        </span>
+      </div>
+    </div>
   </div>
 </div>
 
