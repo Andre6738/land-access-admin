@@ -8,29 +8,20 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  email = '';
-  password = '';
   error = '';
   loading = false;
 
   constructor(private auth: AuthService, private router: Router) {}
 
-  login(): void {
-    if (!this.email || !this.password) {
-      this.error = 'Please enter email and password';
-      return;
-    }
+  async loginWithGoogle(): Promise<void> {
     this.error = '';
     this.loading = true;
-
-    // Simulate small delay for UX
-    setTimeout(() => {
-      if (this.auth.login(this.email, this.password)) {
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.error = 'Invalid credentials';
-        this.loading = false;
-      }
-    }, 400);
+    try {
+      await this.auth.loginWithGoogle();
+      this.router.navigate(['/dashboard']);
+    } catch (e: any) {
+      this.error = e.message || 'Sign-in failed';
+      this.loading = false;
+    }
   }
 }

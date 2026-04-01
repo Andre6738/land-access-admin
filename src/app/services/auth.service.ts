@@ -1,23 +1,30 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { Auth, signInWithPopup, GoogleAuthProvider, signOut, User, user } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly STORAGE_KEY = 'admin_authenticated';
+  user$: Observable<User | null>;
 
-  login(email: string, password: string): boolean {
-    if (email === environment.adminEmail && password === environment.adminPassword) {
-      sessionStorage.setItem(this.STORAGE_KEY, 'true');
-      return true;
-    }
-    return false;
+  constructor(private auth: Auth) {
+    this.user$ = user(this.auth);
   }
 
-  logout(): void {
-    sessionStorage.removeItem(this.STORAGE_KEY);
+  async loginWithGoogle(): Promise<User> {
+    const result = await signInWithPopup(this.auth, new GoogleAuthProvider());
+    return result.user;
+  }
+
+  async logout(): Promise<void> {
+    await signOut(this.auth);
   }
 
   isAuthenticated(): boolean {
-    return sessionStorage.getItem(this.STORAGE_KEY) === 'true';
+    return this.auth.currentUser !== null;
+  }
+
+  async getIdToken(): Promise<string | null> {
+    const u = this.auth.currentUser;
+    return u ? u.getIdToken() : null;
   }
 }

@@ -1,8 +1,13 @@
 export const environment = {
   production: false,
   apiBase: 'http://localhost:8080',
-  apiAdminUser: 'svc_adm1n_W1n53rv3_8k4p',
-  apiAdminPass: 'Adm!n_S3cur3_7291z#Y',
-  adminEmail: 'winserve.portal@gmail.com',
-  adminPassword: 'Ajaa@987'
+  firebaseConfig: {
+    apiKey: 'AIzaSyDLo8Kafer8ifVeF3sxRePKggp9t3HL0rk',
+    authDomain: 'winserve-5b277.firebaseapp.com',
+    projectId: 'winserve-5b277',
+    storageBucket: 'winserve-5b277.firebasestorage.app',
+    messagingSenderId: '810720511480',
+    appId: '1:810720511480:web:01792d871411c6d506820d',
+    measurementId: 'G-W2W99FERLX'
+  }
 };
