@@ -56,8 +56,13 @@
     </div>
 
     <div class="form-group">
-      <label>Message Body <span class="hint">(HTML supported)</span></label>
-      <textarea [(ngModel)]="emailBody" rows="8" placeholder="Write your email content here...&#10;&#10;You can use basic HTML tags like <b>, <p>, <a>, <ul>, etc."></textarea>
+      <label>Message Body</label>
+      <quill-editor
+        [(ngModel)]="emailBody"
+        [styles]="{ height: '250px' }"
+        placeholder="Write your email content here..."
+        [modules]="editorModules"
+      ></quill-editor>
     </div>
 
     <div class="composer-footer">

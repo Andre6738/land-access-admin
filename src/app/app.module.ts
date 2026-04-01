@@ -5,6 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 
+import { QuillModule } from 'ngx-quill';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -37,6 +38,7 @@ import { environment } from '../environments/environment';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    QuillModule.forRoot(),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth())
   ],

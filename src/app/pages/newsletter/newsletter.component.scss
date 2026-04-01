@@ -79,8 +79,7 @@
     }
   }
 
-  input[type="text"],
-  textarea {
+  input[type="text"] {
     width: 100%;
     padding: 0.6rem 0.8rem;
     border: 1px solid #d0d0d0;
@@ -96,10 +95,41 @@
     }
   }
 
-  textarea {
-    resize: vertical;
-    min-height: 120px;
-    line-height: 1.5;
+  quill-editor {
+    display: block;
+
+    ::ng-deep {
+      .ql-toolbar {
+        border: 1px solid #d0d0d0;
+        border-radius: 6px 6px 0 0;
+        background: #f8f9fa;
+      }
+
+      .ql-container {
+        border: 1px solid #d0d0d0;
+        border-top: none;
+        border-radius: 0 0 6px 6px;
+        font-size: 0.9rem;
+        font-family: inherit;
+      }
+
+      .ql-editor {
+        min-height: 200px;
+
+        &.ql-blank::before {
+          font-style: normal;
+          color: #999;
+        }
+      }
+
+      .ql-container:focus-within {
+        border-color: #0f3460;
+      }
+
+      .ql-toolbar:has(+ .ql-container:focus-within) {
+        border-color: #0f3460;
+      }
+    }
   }
 }
 

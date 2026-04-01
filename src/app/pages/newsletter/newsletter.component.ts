@@ -34,6 +34,23 @@ export class NewsletterComponent implements OnInit {
   // Toasts
   toasts: { message: string; type: string }[] = [];
 
+  // Quill editor toolbar configuration
+  editorModules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      [{ 'font': [] }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
+      ['blockquote'],
+      ['link', 'image'],
+      ['clean']
+    ]
+  };
+
   constructor(private api: AdminApiService) {}
 
   ngOnInit(): void {
