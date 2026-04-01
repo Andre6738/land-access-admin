@@ -17,7 +17,11 @@ export class LoginComponent {
     this.error = '';
     this.loading = true;
     try {
-      await this.auth.loginWithGoogle();
+      const user = await this.auth.loginWithGoogle();
+      const token = await user.getIdToken();
+      if (!token) {
+        throw new Error('Failed to obtain authentication token');
+      }
       this.router.navigate(['/dashboard']);
     } catch (e: any) {
       this.error = e.message || 'Sign-in failed';
