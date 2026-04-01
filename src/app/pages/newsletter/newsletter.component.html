@@ -1,0 +1,133 @@
+<div class="page">
+  <div class="page-title-row">
+    <h1>Newsletter & Email</h1>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid" *ngIf="!statsLoading">
+    <div class="stat-card">
+      <div class="stat-value subscribers">{{ subscriberCount }}</div>
+      <div class="stat-label">Newsletter Subscribers</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value active">{{ activeUserCount }}</div>
+      <div class="stat-label">Active Users</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value total">{{ totalUsers }}</div>
+      <div class="stat-label">Total Users</div>
+    </div>
+  </div>
+  <div *ngIf="statsLoading" class="loading">Loading stats...</div>
+
+  <!-- Email Composer -->
+  <div class="composer-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        style="vertical-align: -4px; margin-right: 6px;">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+      Compose Email
+    </h2>
+
+    <div class="form-group">
+      <label>Recipients</label>
+      <div class="target-selector">
+        <label class="target-option" [class.active]="target === 'subscribers'">
+          <input type="radio" name="target" value="subscribers" [(ngModel)]="target" />
+          <span>Newsletter Subscribers ({{ subscriberCount }})</span>
+        </label>
+        <label class="target-option" [class.active]="target === 'active'">
+          <input type="radio" name="target" value="active" [(ngModel)]="target" />
+          <span>All Active Users ({{ activeUserCount }})</span>
+        </label>
+        <label class="target-option" [class.active]="target === 'selected'">
+          <input type="radio" name="target" value="selected" [(ngModel)]="target" />
+          <span>Selected Users ({{ selectedEmails.size }})</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Subject</label>
+      <input type="text" [(ngModel)]="emailSubject" placeholder="Email subject line..." />
+    </div>
+
+    <div class="form-group">
+      <label>Message Body <span class="hint">(HTML supported)</span></label>
+      <textarea [(ngModel)]="emailBody" rows="8" placeholder="Write your email content here...&#10;&#10;You can use basic HTML tags like <b>, <p>, <a>, <ul>, etc."></textarea>
+    </div>
+
+    <div class="composer-footer">
+      <span class="recipient-info">Sending to: {{ recipientLabel }}</span>
+      <button class="btn-send" (click)="sendEmail()" [disabled]="sending">
+        <svg *ngIf="!sending" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
+          style="vertical-align: -2px; margin-right: 4px;">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+        {{ sending ? 'Sending...' : 'Send Email' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- User Selection Table (visible when target is "selected") -->
+  <div class="user-select-section" *ngIf="target === 'selected'">
+    <h2>Select Recipients</h2>
+    <div class="filter-bar">
+      <div class="filter-row">
+        <input type="text" [(ngModel)]="filterEmail" placeholder="Filter by email..." (keyup.enter)="applyFilter()" />
+        <button class="btn-filter" (click)="applyFilter()">Search</button>
+        <button *ngIf="filterEmail" class="btn-clear" (click)="clearFilter()">Clear</button>
+      </div>
+    </div>
+
+    <div *ngIf="usersLoading" class="loading">Loading users...</div>
+
+    <table *ngIf="!usersLoading && users.length" class="data-table">
+      <thead>
+        <tr>
+          <th style="width:40px">
+            <input type="checkbox" [checked]="selectAll" (change)="toggleSelectAll()" />
+          </th>
+          <th>Email</th>
+          <th>Newsletter</th>
+          <th>Credits</th>
+          <th>Joined</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of users" [class.selected-row]="isSelected(u.email)">
+          <td>
+            <input type="checkbox" [checked]="isSelected(u.email)" (change)="toggleSelect(u.email)" />
+          </td>
+          <td>{{ u.email }}</td>
+          <td>
+            <span class="opt-badge" [class.opted-in]="u.newsletterOptIn" [class.opted-out]="!u.newsletterOptIn">
+              {{ u.newsletterOptIn ? 'Subscribed' : 'Unsubscribed' }}
+            </span>
+          </td>
+          <td>{{ u.balanceCredits ?? 0 }}</td>
+          <td>{{ u.createdAt | date:'d MMM y' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!usersLoading && !users.length" class="empty">No users found.</div>
+
+    <div *ngIf="totalPages > 1" class="pagination">
+      <button [disabled]="page === 0" (click)="goToPage(0)">«</button>
+      <button [disabled]="page === 0" (click)="goToPage(page - 1)">‹</button>
+      <button *ngFor="let p of visiblePages" [class.active]="p === page" (click)="goToPage(p)">{{ p + 1 }}</button>
+      <button [disabled]="page >= totalPages - 1" (click)="goToPage(page + 1)">›</button>
+      <button [disabled]="page >= totalPages - 1" (click)="goToPage(totalPages - 1)">»</button>
+      <span class="page-info">Page {{ page + 1 }} of {{ totalPages }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="toast-container">
+  <div *ngFor="let t of toasts" class="toast" [ngClass]="t.type">{{ t.message }}</div>
+</div>

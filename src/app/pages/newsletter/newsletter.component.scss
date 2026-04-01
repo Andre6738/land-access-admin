@@ -1,0 +1,361 @@
+.page {
+  h1 {
+    margin: 0 0 1.5rem;
+    color: #1a1a2e;
+  }
+}
+
+.loading, .empty {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+// ── Stats Grid ──
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.2rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e8e8e8;
+  text-align: center;
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+
+    &.subscribers { color: #0f3460; }
+    &.active { color: #28a745; }
+    &.total { color: #6c757d; }
+  }
+
+  .stat-label {
+    font-size: 0.82rem;
+    color: #888;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+}
+
+// ── Composer Card ──
+.composer-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e8e8e8;
+  margin-bottom: 1.5rem;
+
+  h2 {
+    margin: 0 0 1.2rem;
+    color: #1a1a2e;
+    font-size: 1.15rem;
+  }
+}
+
+.form-group {
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    font-size: 0.85rem;
+    color: #333;
+
+    .hint {
+      font-weight: 400;
+      color: #999;
+      font-size: 0.78rem;
+    }
+  }
+
+  input[type="text"],
+  textarea {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: #fff;
+    box-sizing: border-box;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: #0f3460;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+  }
+}
+
+.target-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.target-option {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #555;
+  transition: all 0.2s;
+
+  input[type="radio"] {
+    display: none;
+  }
+
+  &.active {
+    border-color: #0f3460;
+    background: #f0f4ff;
+    color: #0f3460;
+    font-weight: 600;
+  }
+
+  &:hover {
+    border-color: #0f3460;
+  }
+}
+
+.composer-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.recipient-info {
+  font-size: 0.82rem;
+  color: #666;
+}
+
+.btn-send {
+  padding: 0.6rem 1.5rem;
+  background: #0f3460;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) { background: #0d2b50; }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ── User Selection Section ──
+.user-select-section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e8e8e8;
+
+  h2 {
+    margin: 0 0 1rem;
+    color: #1a1a2e;
+    font-size: 1.1rem;
+  }
+}
+
+.filter-bar {
+  margin-bottom: 1rem;
+  background: #f8f9fa;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.filter-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  input[type="text"] {
+    flex: 1;
+    max-width: 300px;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    background: #fff;
+
+    &:focus {
+      outline: none;
+      border-color: #0f3460;
+    }
+  }
+}
+
+.btn-filter {
+  padding: 0.5rem 1.2rem;
+  background: #0f3460;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+
+  &:hover { background: #0d2b50; }
+}
+
+.btn-clear {
+  padding: 0.5rem 1rem;
+  background: #e8e8e8;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #444;
+
+  &:hover { background: #ddd; }
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  th, td {
+    padding: 0.65rem 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 0.85rem;
+  }
+
+  th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  tbody tr:hover {
+    background: #f8f9ff;
+  }
+
+  input[type="checkbox"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.selected-row {
+  background: #f0f4ff !important;
+}
+
+.opt-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &.opted-in { background: #d4edda; color: #155724; }
+  &.opted-out { background: #f8d7da; color: #721c24; }
+}
+
+// ── Pagination ──
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+
+  button {
+    padding: 0.4rem 0.7rem;
+    border: 1px solid #d0d0d0;
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.82rem;
+
+    &:hover:not(:disabled) { background: #f0f4ff; }
+    &:disabled { opacity: 0.4; cursor: default; }
+    &.active {
+      background: #0f3460;
+      color: #fff;
+      border-color: #0f3460;
+    }
+  }
+
+  .page-info {
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+    color: #888;
+  }
+}
+
+// ── Page Title Row ──
+.page-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+// ── Toasts ──
+.toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 2000;
+}
+
+.toast {
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.3s ease-out;
+
+  &.success { background: #28a745; }
+  &.error { background: #e94560; }
+  &.info { background: #0f3460; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

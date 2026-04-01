@@ -8,6 +8,7 @@ import { ConfigComponent } from './pages/config/config.component';
 import { ActivityComponent } from './pages/activity/activity.component';
 import { GenerationsComponent } from './pages/generations/generations.component';
 import { BulkUploadsComponent } from './pages/bulk-uploads/bulk-uploads.component';
+import { NewsletterComponent } from './pages/newsletter/newsletter.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -23,6 +24,7 @@ const routes: Routes = [
       { path: 'activity', component: ActivityComponent },
       { path: 'generations', component: GenerationsComponent },
       { path: 'bulk-uploads', component: BulkUploadsComponent },
+      { path: 'newsletter', component: NewsletterComponent },
     ]
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },

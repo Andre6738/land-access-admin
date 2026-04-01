@@ -145,4 +145,13 @@ export class AdminApiService {
     if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
     return this.http.get(`${this.base}/bulk-uploads`, { params });
   }
+
+  // ── Newsletter / Email ──
+  getNewsletterStats(): Observable<any> {
+    return this.http.get(`${this.base}/newsletter/stats`);
+  }
+
+  sendEmail(payload: { subject: string; body: string; target: string; emails?: string[] }): Observable<any> {
+    return this.http.post(`${this.base}/send-email`, payload);
+  }
 }
