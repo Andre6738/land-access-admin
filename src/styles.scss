@@ -23,30 +23,6 @@ body {
   }
 }
 
-.title-left {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.btn-back {
-  padding: 0.4rem 0.85rem;
-  background: #fff;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.82rem;
-  color: #0f3460;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: all 0.2s;
-
-  &:hover {
-    background: #f0f2f5;
-    border-color: #0f3460;
-  }
-}
-
 .btn-export {
   padding: 0.45rem 1rem;
   background: #fff;
