@@ -30,6 +30,7 @@ export class NewsletterComponent implements OnInit {
   emailBody = '';
   target: 'subscribers' | 'active' | 'selected' = 'subscribers';
   sending = false;
+  attachments: File[] = [];
 
   // Toasts
   toasts: { message: string; type: string }[] = [];
@@ -150,6 +151,26 @@ export class NewsletterComponent implements OnInit {
     }
   }
 
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      for (let i = 0; i < input.files.length; i++) {
+        this.attachments.push(input.files[i]);
+      }
+      input.value = '';
+    }
+  }
+
+  removeAttachment(index: number): void {
+    this.attachments.splice(index, 1);
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
   sendEmail(): void {
     if (!this.emailSubject.trim() || !this.emailBody.trim()) {
       this.showToast('Please enter both a subject and message body.', 'error');
@@ -170,11 +191,12 @@ export class NewsletterComponent implements OnInit {
       payload.emails = Array.from(this.selectedEmails);
     }
 
-    this.api.sendEmail(payload).subscribe({
+    this.api.sendEmail(payload, this.attachments.length > 0 ? this.attachments : undefined).subscribe({
       next: (res: any) => {
         this.showToast(`Email sent to ${res.sent} recipient${res.sent !== 1 ? 's' : ''}.`, 'success');
         this.emailSubject = '';
         this.emailBody = '';
+        this.attachments = [];
         this.sending = false;
       },
       error: () => {

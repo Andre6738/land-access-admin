@@ -151,7 +151,17 @@ export class AdminApiService {
     return this.http.get(`${this.base}/newsletter/stats`);
   }
 
-  sendEmail(payload: { subject: string; body: string; target: string; emails?: string[] }): Observable<any> {
-    return this.http.post(`${this.base}/send-email`, payload);
+  sendEmail(payload: { subject: string; body: string; target: string; emails?: string[] }, attachments?: File[]): Observable<any> {
+    const formData = new FormData();
+    formData.append('subject', payload.subject);
+    formData.append('body', payload.body);
+    formData.append('target', payload.target);
+    if (payload.emails) {
+      payload.emails.forEach(e => formData.append('emails', e));
+    }
+    if (attachments) {
+      attachments.forEach(f => formData.append('attachments', f, f.name));
+    }
+    return this.http.post(`${this.base}/send-email`, formData);
   }
 }
