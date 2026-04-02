@@ -7,6 +7,11 @@ import { AdminApiService } from '../../services/admin-api.service';
   styleUrls: ['./newsletter.component.scss']
 })
 export class NewsletterComponent implements OnInit {
+  // Feature toggle
+  newsletterEnabled = false;
+  canEditToggle = false;
+  toggleLoading = true;
+
   // Stats
   subscriberCount = 0;
   activeUserCount = 0;
@@ -55,8 +60,34 @@ export class NewsletterComponent implements OnInit {
   constructor(private api: AdminApiService) {}
 
   ngOnInit(): void {
+    this.loadToggle();
     this.loadStats();
     this.loadUsers();
+  }
+
+  loadToggle(): void {
+    this.toggleLoading = true;
+    this.api.getNewsletterEnabled().subscribe({
+      next: (data: any) => {
+        this.newsletterEnabled = data.enabled;
+        this.canEditToggle = data.canEditToggle;
+        this.toggleLoading = false;
+      },
+      error: () => { this.toggleLoading = false; }
+    });
+  }
+
+  updateToggle(): void {
+    const newVal = !this.newsletterEnabled;
+    this.api.updateNewsletterEnabled(newVal).subscribe({
+      next: (data: any) => {
+        this.newsletterEnabled = data.enabled;
+        this.showToast(`Newsletter feature ${data.enabled ? 'enabled' : 'disabled'}.`, 'success');
+      },
+      error: () => {
+        this.showToast('Failed to update newsletter toggle.', 'error');
+      }
+    });
   }
 
   loadStats(): void {

@@ -1,8 +1,31 @@
 <div class="page">
   <div class="page-title-row">
     <h1>Newsletter & Email</h1>
+    <div class="title-actions" *ngIf="!toggleLoading">
+      <label class="toggle-switch" *ngIf="canEditToggle" (click)="updateToggle()">
+        <span class="toggle-text">{{ newsletterEnabled ? 'Enabled' : 'Disabled' }}</span>
+        <span class="switch-track" [class.on]="newsletterEnabled">
+          <span class="switch-thumb"></span>
+        </span>
+      </label>
+      <span class="toggle-status" *ngIf="!canEditToggle">
+        <span class="badge" [class.badge-active]="newsletterEnabled" [class.badge-inactive]="!newsletterEnabled">
+          {{ newsletterEnabled ? 'Enabled' : 'Disabled' }}
+        </span>
+      </span>
+    </div>
   </div>
 
+  <!-- Feature disabled banner -->
+  <div class="disabled-banner" *ngIf="!toggleLoading && !newsletterEnabled">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span>The newsletter feature is currently disabled. Only the designated administrator can enable it.</span>
+  </div>
+
+  <ng-container *ngIf="newsletterEnabled">
   <!-- Stats Cards -->
   <div class="stats-grid" *ngIf="!statsLoading">
     <div class="stat-card">
@@ -153,6 +176,7 @@
       <span class="page-info">Page {{ page + 1 }} of {{ totalPages }}</span>
     </div>
   </div>
+  </ng-container>
 </div>
 
 <!-- Toasts -->

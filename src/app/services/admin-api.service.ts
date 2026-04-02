@@ -147,6 +147,15 @@ export class AdminApiService {
   }
 
   // ── Newsletter / Email ──
+  getNewsletterEnabled(): Observable<any> {
+    return this.http.get(`${this.base}/config/newsletter-enabled`);
+  }
+
+  updateNewsletterEnabled(enabled: boolean): Observable<any> {
+    const params = new HttpParams().set('enabled', enabled);
+    return this.http.put(`${this.base}/config/newsletter-enabled`, null, { params });
+  }
+
   getNewsletterStats(): Observable<any> {
     return this.http.get(`${this.base}/newsletter/stats`);
   }
