@@ -11,6 +11,7 @@ import { BulkUploadsComponent } from './pages/bulk-uploads/bulk-uploads.componen
 import { NewsletterComponent } from './pages/newsletter/newsletter.component';
 import { AdvertsComponent } from './pages/adverts/adverts.component';
 import { ReferralsComponent } from './pages/referrals/referrals.component';
+import { InfrastructureComponent } from './pages/infrastructure/infrastructure.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -29,6 +30,7 @@ const routes: Routes = [
       { path: 'newsletter', component: NewsletterComponent },
       { path: 'adverts', component: AdvertsComponent },
       { path: 'referrals', component: ReferralsComponent },
+      { path: 'infrastructure', component: InfrastructureComponent },
     ]
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },

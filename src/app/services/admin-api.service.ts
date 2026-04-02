@@ -301,4 +301,9 @@ export class AdminApiService {
   getReferralRedemptions(): Observable<any> {
     return this.http.get(`${this.base}/referrals/redemptions`);
   }
+
+  // ── Infrastructure ──
+  getDbStats(): Observable<any> {
+    return this.http.get(`${this.base}/infrastructure/db-stats`);
+  }
 }

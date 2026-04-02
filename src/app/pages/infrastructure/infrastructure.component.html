@@ -1,0 +1,169 @@
+<div class="page">
+  <div class="page-title-row">
+    <h1>Infrastructure</h1>
+    <button class="refresh-btn" (click)="loadStats()" [disabled]="loading">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" [class.spinning]="loading">
+        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+      </svg>
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="lastUpdated" class="last-updated">
+    Last updated: {{ lastUpdated | date:'medium' }}
+  </div>
+
+  <div *ngIf="loading && !lastUpdated" class="loading">
+    <div class="spinner"></div>
+    <span>Loading infrastructure data...</span>
+  </div>
+
+  <div *ngIf="error" class="error-banner">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading || lastUpdated">
+    <!-- Database Usage Gauge -->
+    <div class="gauge-section">
+      <div class="gauge-card" [class]="usageClass">
+        <div class="gauge-container">
+          <svg viewBox="0 0 120 120" class="gauge-svg">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#e8ecf1" stroke-width="10"/>
+            <circle cx="60" cy="60" r="54" fill="none"
+                    [attr.stroke]="usageClass === 'critical' ? '#dc2626' : usageClass === 'warning' ? '#f59e0b' : '#10b981'"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                    [style.stroke-dasharray]="'339.292'"
+                    [style.stroke-dashoffset]="gaugeOffset"
+                    transform="rotate(-90 60 60)"
+                    class="gauge-fill"/>
+          </svg>
+          <div class="gauge-text">
+            <span class="gauge-value">{{ usagePercent | number:'1.1-1' }}%</span>
+            <span class="gauge-label">Used</span>
+          </div>
+        </div>
+        <div class="gauge-details">
+          <h3>Database Storage</h3>
+          <p class="db-name">{{ databaseName }}</p>
+          <div class="gauge-stats">
+            <div class="stat">
+              <span class="stat-value">{{ dbSizeMB | number:'1.1-1' }} MB</span>
+              <span class="stat-label">Current Size</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">{{ maxSizeMB | number:'1.0-0' }} MB</span>
+              <span class="stat-label">Max Capacity</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">{{ (maxSizeMB - dbSizeMB) | number:'1.1-1' }} MB</span>
+              <span class="stat-label">Available</span>
+            </div>
+          </div>
+          <div *ngIf="usagePercent >= 80" class="alert-banner critical">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            Database is {{ usagePercent | number:'1.0-0' }}% full — consider upgrading or cleaning up data
+          </div>
+          <div *ngIf="usagePercent >= 60 && usagePercent < 80" class="alert-banner warning">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            Database usage is approaching capacity
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connection Pool -->
+    <div class="connections-bar">
+      <div class="conn-card">
+        <span class="conn-value">{{ connections.active }}</span>
+        <span class="conn-label">Active Connections</span>
+      </div>
+      <div class="conn-card">
+        <span class="conn-value">{{ connections.total }}</span>
+        <span class="conn-label">Total Connections</span>
+      </div>
+      <div class="conn-card">
+        <span class="conn-value">{{ connections.max }}</span>
+        <span class="conn-label">Max Connections</span>
+      </div>
+    </div>
+
+    <!-- Infrastructure Links -->
+    <div class="section-header">
+      <h2>Infrastructure Links</h2>
+    </div>
+    <div class="links-grid">
+      <a *ngFor="let link of infraLinks" [href]="link.url" target="_blank" rel="noopener" class="link-card">
+        <div class="link-icon" [style.background]="link.color + '18'" [style.color]="link.color">
+          <!-- Database icon -->
+          <svg *ngIf="link.icon === 'database'" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M12 3C7.58 3 4 4.79 4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7c0-2.21-3.58-4-8-4zm0 2c3.87 0 6 1.5 6 2s-2.13 2-6 2-6-1.5-6-2 2.13-2 6-2zM4 17v-2.34c1.37.97 3.53 1.56 5.88 1.71l-.01.01C10.56 16.78 11.27 17 12 17s1.44-.22 2.13-.62l-.01-.01c2.35-.15 4.51-.74 5.88-1.71V17c0 .5-2.13 2-6 2s-6-1.5-6-2z"/>
+          </svg>
+          <!-- Server icon -->
+          <svg *ngIf="link.icon === 'server'" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 6H4V4h16v4zm0 4H4c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2zm0 6H4v-4h16v4zM6 7h2V5H6v2zm0 8h2v-2H6v2z"/>
+          </svg>
+          <!-- Firebase icon -->
+          <svg *ngIf="link.icon === 'firebase'" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M3.89 15.672L6.255 2.573a.454.454 0 01.863-.094l2.478 4.633-5.706 8.56zm16.22.328L17.8 3.364a.454.454 0 00-.793-.097L3 20.1l8.066 4.5a1.364 1.364 0 001.32 0l7.724-4.3-0.0-.3zM14.3 7.93l-1.97-3.78a.454.454 0 00-.8 0L3.89 15.672 14.3 7.93z"/>
+          </svg>
+          <!-- Payment icon -->
+          <svg *ngIf="link.icon === 'payment'" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+          </svg>
+          <!-- Globe icon -->
+          <svg *ngIf="link.icon === 'globe'" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/>
+          </svg>
+          <!-- API icon -->
+          <svg *ngIf="link.icon === 'api'" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M14 12l-2 2-2-2 2-2 2 2zm-2-6l2.12 2.12 2.5-2.5L12 1 7.38 5.62l2.5 2.5L12 6zm-6 6l2.12-2.12-2.5-2.5L1 12l4.62 4.62 2.5-2.5L6 12zm12 0l-2.12 2.12 2.5 2.5L23 12l-4.62-4.62-2.5 2.5L18 12zm-6 6l-2.12-2.12-2.5 2.5L12 23l4.62-4.62-2.5-2.5L12 18z"/>
+          </svg>
+        </div>
+        <div class="link-body">
+          <span class="link-name">{{ link.name }}</span>
+          <span class="link-desc">{{ link.description }}</span>
+        </div>
+        <svg class="link-arrow" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Table Sizes -->
+    <div class="section-header">
+      <h2>Table Sizes</h2>
+    </div>
+    <div class="table-container">
+      <table class="data-table" *ngIf="tables.length">
+        <thead>
+          <tr>
+            <th>Table</th>
+            <th>Total Size</th>
+            <th>Data</th>
+            <th>Indexes</th>
+            <th>Rows (est.)</th>
+            <th>% of DB</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of tables">
+            <td class="table-name">{{ t.name }}</td>
+            <td>{{ formatBytes(t.totalBytes) }}</td>
+            <td>{{ formatBytes(t.tableBytes) }}</td>
+            <td>{{ formatBytes(t.indexBytes) }}</td>
+            <td>{{ t.rows | number }}</td>
+            <td>
+              <div class="mini-bar-wrapper">
+                <div class="mini-bar" [style.width.%]="maxSizeMB > 0 ? (t.totalBytes / (maxSizeMB * 1024 * 1024) * 100) : 0"></div>
+                <span>{{ maxSizeMB > 0 ? (t.totalBytes / (maxSizeMB * 1024 * 1024) * 100).toFixed(2) : '0.00' }}%</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="!tables.length" class="empty-state">No table data available.</div>
+    </div>
+  </div>
+</div>
