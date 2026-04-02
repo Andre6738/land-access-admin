@@ -48,6 +48,29 @@ export class AdvertsComponent implements OnInit {
   // Preview
   showPreview = false;
 
+  // Image upload
+  imageMode: 'url' | 'upload' = 'url';
+  uploadedFileName = '';
+
+  // Tooltip
+  activeTooltip: string | null = null;
+
+  fieldHints: Record<string, string> = {
+    title: 'The headline displayed on the advert card. Keep it short and compelling (max 256 chars).',
+    advertiserName: 'The company or individual paying for the advert. Shown below the title.',
+    description: 'A brief description of the product or service being advertised. Appears in the advert card body (optional).',
+    imageUrl: 'A direct link to the advert image. Use a high-quality image (recommended 1200×300 for banners, 400×300 for cards).',
+    imageUpload: 'Upload an image from your device. It will be encoded and stored directly. Max recommended size: 500 KB.',
+    targetUrl: 'The URL users are taken to when they click the advert. Must start with https://.',
+    ctaText: 'Call-to-action button text, e.g. "Learn More", "Get Started", "Shop Now". Defaults to "Learn More".',
+    placement: 'Where the advert appears on the site. HOME_BANNER = top of home page, HOME_SIDEBAR = home sidebar, DASHBOARD_CARD = user dashboard, FOOTER_BANNER = site footer.',
+    startDate: 'When the advert starts displaying. If blank, it starts immediately.',
+    endDate: 'When the advert stops displaying. Leave blank for no expiry.',
+    displayOrder: 'Lower numbers appear first. Adverts with the same order are sorted by creation date.',
+    adType: 'The advert provider type. CUSTOM = managed by you, GOOGLE_ADS / PROVIDER = third-party (future use).',
+    active: 'Whether the advert is currently live. Inactive adverts are hidden from users but kept for records.'
+  };
+
   // Pagination
   page = 0;
   totalPages = 0;
@@ -116,6 +139,8 @@ export class AdvertsComponent implements OnInit {
     this.editing = false;
     this.showForm = true;
     this.showPreview = false;
+    this.imageMode = 'url';
+    this.uploadedFileName = '';
   }
 
   openEdit(advert: Advert): void {
@@ -129,6 +154,8 @@ export class AdvertsComponent implements OnInit {
     this.editing = true;
     this.showForm = true;
     this.showPreview = false;
+    this.imageMode = this.formAdvert.imageUrl?.startsWith('data:') ? 'upload' : 'url';
+    this.uploadedFileName = this.imageMode === 'upload' ? 'Previously uploaded' : '';
   }
 
   cancelForm(): void {
@@ -138,6 +165,41 @@ export class AdvertsComponent implements OnInit {
 
   togglePreview(): void {
     this.showPreview = !this.showPreview;
+  }
+
+  setImageMode(mode: 'url' | 'upload'): void {
+    this.imageMode = mode;
+    if (mode === 'url' && this.formAdvert.imageUrl?.startsWith('data:')) {
+      this.formAdvert.imageUrl = '';
+      this.uploadedFileName = '';
+    }
+    if (mode === 'upload' && this.formAdvert.imageUrl && !this.formAdvert.imageUrl.startsWith('data:')) {
+      this.formAdvert.imageUrl = '';
+    }
+  }
+
+  onImageFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    const file = input.files[0];
+    if (!file.type.startsWith('image/')) {
+      this.showToast('Please select an image file', 'error');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      this.showToast('Image must be under 2 MB', 'error');
+      return;
+    }
+    this.uploadedFileName = file.name;
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.formAdvert.imageUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  toggleTooltip(field: string): void {
+    this.activeTooltip = this.activeTooltip === field ? null : field;
   }
 
   saveAdvert(): void {
@@ -206,6 +268,10 @@ export class AdvertsComponent implements OnInit {
   isFormValid(): boolean {
     const a = this.formAdvert;
     return a.title?.trim() && a.advertiserName?.trim() && a.targetUrl?.trim() && a.placement;
+  }
+
+  formatPlacement(p: string): string {
+    return p.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   }
 
   private blankAdvert(): any {
