@@ -88,7 +88,7 @@
             <td>{{ c.rewardRules?.length || 0 }}</td>
             <td class="actions-cell">
               <button class="btn-sm" (click)="openEditCampaign(c)">Edit</button>
-              <button class="btn-sm" (click)="toggleCampaignActive(c)">{{ c.active ? 'Deactivate' : 'Activate' }}</button>
+              <button class="btn-sm" [class.btn-activate]="!c.active" [class.btn-deactivate]="c.active" (click)="toggleCampaignActive(c)">{{ c.active ? 'Deactivate' : 'Activate' }}</button>
               <button class="btn-sm btn-danger" (click)="deleteCampaign(c)">Delete</button>
             </td>
           </tr>
@@ -175,7 +175,7 @@
             <td><span class="badge" [class.active]="r.active" [class.inactive]="!r.active">{{ r.active ? 'Active' : 'Inactive' }}</span></td>
             <td class="actions-cell">
               <button class="btn-sm" (click)="openEditRule(r)">Edit</button>
-              <button class="btn-sm" (click)="toggleRuleActive(r)">{{ r.active ? 'Deactivate' : 'Activate' }}</button>
+              <button class="btn-sm" [class.btn-activate]="!r.active" [class.btn-deactivate]="r.active" (click)="toggleRuleActive(r)">{{ r.active ? 'Deactivate' : 'Activate' }}</button>
               <button class="btn-sm btn-danger" (click)="deleteRule(r)">Delete</button>
             </td>
           </tr>

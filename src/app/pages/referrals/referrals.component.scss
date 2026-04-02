@@ -143,21 +143,41 @@
   font-weight: 500;
   cursor: pointer;
   border: none;
-  transition: background 0.15s;
+  transition: background 0.15s, box-shadow 0.15s;
 }
 .btn-primary { background: #094164; color: #fff; &:hover { background: #0b5a8a; } }
 .btn-secondary { background: #e8ecf0; color: #333; &:hover { background: #d0d5da; } }
 .btn-danger { background: #dc3545; color: #fff; &:hover { background: #b02a37; } }
 .btn-sm {
-  padding: 0.25rem 0.6rem;
-  font-size: 0.8rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 500;
   border-radius: 5px;
   cursor: pointer;
-  background: #e8ecf0;
-  border: none;
-  &:hover { background: #d0d5da; }
+  border: 1px solid #d0d5da;
+  background: #fff;
+  color: #333;
+  transition: all 0.15s;
+  &:hover { background: #f5f7fa; border-color: #094164; color: #094164; }
 }
-.btn-sm.btn-danger { background: #fdecea; color: #dc3545; &:hover { background: #f5c6cb; } }
+.btn-sm.btn-activate {
+  border-color: #16a34a;
+  color: #16a34a;
+  background: #f0fdf4;
+  &:hover { background: #dcfce7; }
+}
+.btn-sm.btn-deactivate {
+  border-color: #d97706;
+  color: #d97706;
+  background: #fffbeb;
+  &:hover { background: #fef3c7; }
+}
+.btn-sm.btn-danger {
+  border-color: #fca5a5;
+  color: #dc3545;
+  background: #fef2f2;
+  &:hover { background: #fee2e2; border-color: #dc3545; }
+}
 
 /* Tables */
 .table-wrap {
@@ -176,8 +196,9 @@
 
 .actions-cell {
   display: flex;
-  gap: 0.35rem;
+  gap: 0.4rem;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 /* Badges */
