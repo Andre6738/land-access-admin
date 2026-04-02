@@ -52,8 +52,8 @@ export class InfrastructureComponent implements OnInit, OnDestroy {
     },
     {
       name: 'Frontend (Live)',
-      description: 'winserve-5b277.web.app',
-      url: 'https://winserve-5b277.web.app/',
+      description: 'winserve.co.za',
+      url: 'http://winserve.co.za/',
       icon: 'globe',
       color: '#094164'
     },

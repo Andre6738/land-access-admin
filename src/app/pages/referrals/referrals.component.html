@@ -9,15 +9,25 @@
   <!-- Feature Toggles -->
   <div class="card toggle-card">
     <h2>Feature Toggles</h2>
-    <p class="hint" *ngIf="!canEditToggles">Only the designated administrator may edit feature toggles.</p>
-    <div class="toggle-grid">
+    <div *ngIf="canEditToggles" class="toggle-grid">
       <div *ngFor="let key of toggleKeys" class="toggle-row">
         <label class="toggle-label">
-          <input type="checkbox" [(ngModel)]="toggles[key]" [disabled]="!canEditToggles" />
+          <input type="checkbox" [(ngModel)]="toggles[key]" />
           <span>{{ prettyToggleKey(key) }}</span>
         </label>
       </div>
     </div>
+    <div *ngIf="!canEditToggles" class="toggle-grid">
+      <div *ngFor="let key of toggleKeys" class="toggle-row">
+        <span class="toggle-label">
+          <span class="status-badge" [class.active]="toggles[key]" [class.inactive]="!toggles[key]">
+            {{ toggles[key] ? 'Enabled' : 'Disabled' }}
+          </span>
+          <span>{{ prettyToggleKey(key) }}</span>
+        </span>
+      </div>
+    </div>
+    <p class="hint" *ngIf="!canEditToggles">Only the designated administrator may edit feature toggles.</p>
     <button class="btn btn-primary" (click)="saveToggles()" *ngIf="canEditToggles">Save Toggles</button>
   </div>
 
