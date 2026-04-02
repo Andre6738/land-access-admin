@@ -58,8 +58,19 @@
 .section-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 1rem;
   margin-bottom: 1rem;
+
+  h2 { margin-bottom: 0.25rem; }
+}
+
+.section-desc {
+  color: #667;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  margin-bottom: 1rem;
+  max-width: 720px;
 }
 
 /* Forms */
@@ -81,6 +92,31 @@
     &:focus { outline: none; border-color: #094164; box-shadow: 0 0 0 2px rgba(9,65,100,0.12); }
   }
   textarea { resize: vertical; }
+
+  .checkbox-field {
+    display: flex;
+    align-items: center;
+    padding-top: 0.4rem;
+
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #333;
+      cursor: pointer;
+      margin-bottom: 0;
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #094164;
+        margin: 0;
+        flex-shrink: 0;
+      }
+    }
+  }
 }
 
 .form-actions {

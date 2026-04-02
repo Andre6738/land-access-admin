@@ -33,7 +33,10 @@
   <!-- ═══════ CAMPAIGNS ═══════ -->
   <div *ngIf="activeTab === 'campaigns'" class="tab-content">
     <div class="section-header">
-      <h2>Campaigns</h2>
+      <div>
+        <h2>Campaigns</h2>
+        <p class="section-desc">Campaigns group referral activity under a single promotion. Each campaign can have its own date range, reward rules, and tracking. Users share referral codes tied to the active campaign.</p>
+      </div>
       <button class="btn btn-primary" (click)="openCreateCampaign()">+ New Campaign</button>
     </div>
 
@@ -45,7 +48,7 @@
         <div class="field full"><label>Description</label><textarea [(ngModel)]="formCampaign.description" rows="3" placeholder="How does this campaign work?"></textarea></div>
         <div class="field"><label>Start Date</label><input type="datetime-local" [(ngModel)]="formCampaign.startDate" /></div>
         <div class="field"><label>End Date</label><input type="datetime-local" [(ngModel)]="formCampaign.endDate" /></div>
-        <div class="field"><label><input type="checkbox" [(ngModel)]="formCampaign.active" /> Active</label></div>
+        <div class="field full checkbox-field"><label class="checkbox-label"><input type="checkbox" [(ngModel)]="formCampaign.active" /> Active</label></div>
       </div>
       <div class="form-actions">
         <button class="btn btn-primary" (click)="saveCampaign()">{{ editingCampaign ? 'Update' : 'Create' }}</button>
@@ -94,7 +97,10 @@
   <!-- ═══════ REWARD RULES ═══════ -->
   <div *ngIf="activeTab === 'rules'" class="tab-content">
     <div class="section-header">
-      <h2>Reward Rules</h2>
+      <div>
+        <h2>Reward Rules</h2>
+        <p class="section-desc">Reward rules define what users earn for successful referrals. Each rule belongs to a campaign and specifies the reward type (e.g. credits, discount), who receives it (referrer, referred, or both), the value, and how many referrals are needed to qualify.</p>
+      </div>
       <button class="btn btn-primary" (click)="openCreateRule()">+ New Rule</button>
     </div>
 
@@ -124,8 +130,8 @@
         <div class="field"><label>Reward Value</label><input type="number" [(ngModel)]="formRule.rewardValue" min="0" /></div>
         <div class="field"><label>Min Referrals Required</label><input type="number" [(ngModel)]="formRule.minReferrals" min="1" /></div>
         <div class="field"><label>Max Redemptions/User</label><input type="number" [(ngModel)]="formRule.maxRedemptionsPerUser" placeholder="Unlimited" /></div>
-        <div class="field"><label><input type="checkbox" [(ngModel)]="formRule.repeatable" /> Repeatable</label></div>
-        <div class="field"><label><input type="checkbox" [(ngModel)]="formRule.active" /> Active</label></div>
+        <div class="field checkbox-field"><label class="checkbox-label"><input type="checkbox" [(ngModel)]="formRule.repeatable" /> Repeatable</label></div>
+        <div class="field checkbox-field"><label class="checkbox-label"><input type="checkbox" [(ngModel)]="formRule.active" /> Active</label></div>
       </div>
       <div class="form-actions">
         <button class="btn btn-primary" (click)="saveRule()">{{ editingRule ? 'Update' : 'Create' }}</button>
@@ -172,6 +178,7 @@
   <!-- ═══════ CODES ═══════ -->
   <div *ngIf="activeTab === 'codes'" class="tab-content">
     <h2>Referral Codes</h2>
+    <p class="section-desc">Every user who signs up gets a unique referral code. When someone new registers using that code, a referral event is created. Codes can have a maximum usage limit or be unlimited. Codes are generated automatically during sign-up.</p>
     <div class="table-wrap">
       <table *ngIf="codes.length > 0">
         <thead>
@@ -195,6 +202,7 @@
   <!-- ═══════ EVENTS ═══════ -->
   <div *ngIf="activeTab === 'events'" class="tab-content">
     <h2>Referral Events</h2>
+    <p class="section-desc">Referral events track each time a new user signs up using someone's referral code. Events move through statuses: Pending → Signed Up → Qualified → Rewarded. Filter by referrer email or status to find specific referrals.</p>
     <div class="filters">
       <input [(ngModel)]="filterReferrerEmail" placeholder="Referrer email…" />
       <select [(ngModel)]="filterStatus">
@@ -234,6 +242,7 @@
   <!-- ═══════ REDEMPTIONS ═══════ -->
   <div *ngIf="activeTab === 'redemptions'" class="tab-content">
     <h2>Reward Redemptions</h2>
+    <p class="section-desc">Redemptions show which users have earned rewards from referral activity. Each entry records the user, the rule that triggered it, the reward value, and whether it has been granted or revoked.</p>
     <div class="table-wrap">
       <table *ngIf="redemptions.length > 0">
         <thead>
