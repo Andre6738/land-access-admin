@@ -164,4 +164,51 @@ export class AdminApiService {
     }
     return this.http.post(`${this.base}/send-email`, formData);
   }
+
+  // ── Adverts ──
+
+  getAdverts(filters: {
+    page?: number;
+    size?: number;
+    title?: string;
+    placement?: string;
+    active?: boolean | null;
+  } = {}): Observable<any> {
+    let params = new HttpParams()
+      .set('page', filters.page ?? 0)
+      .set('size', filters.size ?? 50);
+    if (filters.title) params = params.set('title', filters.title);
+    if (filters.placement) params = params.set('placement', filters.placement);
+    if (filters.active !== null && filters.active !== undefined) params = params.set('active', filters.active);
+    return this.http.get(`${this.base}/adverts`, { params });
+  }
+
+  getAdvert(id: string): Observable<any> {
+    return this.http.get(`${this.base}/adverts/${id}`);
+  }
+
+  createAdvert(advert: any): Observable<any> {
+    return this.http.post(`${this.base}/adverts`, advert);
+  }
+
+  updateAdvert(id: string, advert: any): Observable<any> {
+    return this.http.put(`${this.base}/adverts/${id}`, advert);
+  }
+
+  deleteAdvert(id: string): Observable<any> {
+    return this.http.delete(`${this.base}/adverts/${id}`);
+  }
+
+  toggleAdvertActive(id: string): Observable<any> {
+    return this.http.post(`${this.base}/adverts/${id}/toggle-active`, null);
+  }
+
+  getAdvertsEnabled(): Observable<{ enabled: boolean }> {
+    return this.http.get<{ enabled: boolean }>(`${this.base}/config/adverts-enabled`);
+  }
+
+  updateAdvertsEnabled(enabled: boolean): Observable<any> {
+    const params = new HttpParams().set('enabled', enabled);
+    return this.http.put(`${this.base}/config/adverts-enabled`, null, { params });
+  }
 }

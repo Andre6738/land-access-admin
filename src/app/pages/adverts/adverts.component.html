@@ -1,0 +1,187 @@
+<div class="page">
+  <div class="page-title-row">
+    <h1>Advertisements</h1>
+    <div class="title-actions">
+      <label class="toggle-label">
+        <span>Adverts {{ advertsEnabled ? 'Enabled' : 'Disabled' }}</span>
+        <button class="toggle-btn" [class.active]="advertsEnabled" (click)="toggleAdvertsEnabled()">
+          {{ advertsEnabled ? 'ON' : 'OFF' }}
+        </button>
+      </label>
+      <button class="btn-primary" (click)="openCreate()">+ New Advert</button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-row">
+    <input type="text" placeholder="Search by title…" [(ngModel)]="filterTitle" (keyup.enter)="applyFilters()" />
+    <select [(ngModel)]="filterPlacement" (change)="applyFilters()">
+      <option value="">All Placements</option>
+      <option *ngFor="let p of placements" [value]="p">{{ p }}</option>
+    </select>
+    <select [(ngModel)]="filterActive" (change)="applyFilters()">
+      <option [ngValue]="null">All Status</option>
+      <option [ngValue]="true">Active</option>
+      <option [ngValue]="false">Inactive</option>
+    </select>
+    <button class="btn-clear" (click)="clearFilters()">Clear</button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">Loading adverts…</div>
+
+  <!-- Form / Editor -->
+  <div *ngIf="showForm" class="advert-form-overlay">
+    <div class="advert-form">
+      <h2>{{ editing ? 'Edit Advert' : 'Create Advert' }}</h2>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Title *</label>
+          <input type="text" [(ngModel)]="formAdvert.title" maxlength="256" />
+        </div>
+        <div class="form-group">
+          <label>Advertiser Name *</label>
+          <input type="text" [(ngModel)]="formAdvert.advertiserName" maxlength="256" />
+        </div>
+        <div class="form-group full-width">
+          <label>Description</label>
+          <textarea [(ngModel)]="formAdvert.description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Image URL</label>
+          <input type="url" [(ngModel)]="formAdvert.imageUrl" placeholder="https://…" />
+        </div>
+        <div class="form-group">
+          <label>Target URL *</label>
+          <input type="url" [(ngModel)]="formAdvert.targetUrl" placeholder="https://…" />
+        </div>
+        <div class="form-group">
+          <label>CTA Text</label>
+          <input type="text" [(ngModel)]="formAdvert.ctaText" maxlength="128" />
+        </div>
+        <div class="form-group">
+          <label>Placement *</label>
+          <select [(ngModel)]="formAdvert.placement">
+            <option *ngFor="let p of placements" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="datetime-local" [(ngModel)]="formAdvert.startDate" />
+        </div>
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="datetime-local" [(ngModel)]="formAdvert.endDate" />
+        </div>
+        <div class="form-group">
+          <label>Display Order</label>
+          <input type="number" [(ngModel)]="formAdvert.displayOrder" min="0" />
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select [(ngModel)]="formAdvert.adType">
+            <option *ngFor="let t of adTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Active</label>
+          <select [(ngModel)]="formAdvert.active">
+            <option [ngValue]="true">Active</option>
+            <option [ngValue]="false">Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div class="preview-toggle">
+        <button class="btn-secondary" (click)="togglePreview()">{{ showPreview ? 'Hide Preview' : 'Preview' }}</button>
+      </div>
+      <div *ngIf="showPreview" class="advert-preview">
+        <div class="preview-card">
+          <div class="preview-label">Sponsored</div>
+          <img *ngIf="formAdvert.imageUrl" [src]="formAdvert.imageUrl" alt="Ad image" class="preview-image" />
+          <div class="preview-body">
+            <h4>{{ formAdvert.title || 'Advert Title' }}</h4>
+            <p class="preview-advertiser">{{ formAdvert.advertiserName || 'Advertiser' }}</p>
+            <p class="preview-description">{{ formAdvert.description || 'Description text...' }}</p>
+            <a class="preview-cta" [href]="formAdvert.targetUrl || '#'" target="_blank" rel="noopener">
+              {{ formAdvert.ctaText || 'Learn More' }} →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-cancel" (click)="cancelForm()">Cancel</button>
+        <button class="btn-primary" (click)="saveAdvert()" [disabled]="!isFormValid()">
+          {{ editing ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Adverts Table -->
+  <div *ngIf="!loading && !showForm" class="adverts-table-container">
+    <div *ngIf="adverts.length === 0" class="empty-state">No adverts found.</div>
+
+    <table *ngIf="adverts.length > 0" class="adverts-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Advertiser</th>
+          <th>Placement</th>
+          <th>Status</th>
+          <th>Order</th>
+          <th>Clicks</th>
+          <th>Impressions</th>
+          <th>Dates</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ad of adverts">
+          <td class="title-cell">
+            <img *ngIf="ad.imageUrl" [src]="ad.imageUrl" alt="" class="thumb" />
+            <span>{{ ad.title }}</span>
+          </td>
+          <td>{{ ad.advertiserName }}</td>
+          <td><span class="badge badge-placement">{{ ad.placement }}</span></td>
+          <td>
+            <span class="badge" [class.badge-active]="ad.active" [class.badge-inactive]="!ad.active">
+              {{ ad.active ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>{{ ad.displayOrder }}</td>
+          <td>{{ ad.clickCount }}</td>
+          <td>{{ ad.impressionCount }}</td>
+          <td class="date-cell">
+            <div>From: {{ ad.startDate | date:'d MMM y' }}</div>
+            <div *ngIf="ad.endDate">To: {{ ad.endDate | date:'d MMM y' }}</div>
+            <div *ngIf="!ad.endDate" class="no-end">No end date</div>
+          </td>
+          <td class="actions-cell">
+            <button class="btn-sm btn-edit" (click)="openEdit(ad)" title="Edit">✏️</button>
+            <button class="btn-sm" [class.btn-deactivate]="ad.active" [class.btn-activate]="!ad.active"
+                    (click)="toggleActive(ad)" [title]="ad.active ? 'Deactivate' : 'Activate'">
+              {{ ad.active ? '⏸' : '▶' }}
+            </button>
+            <button class="btn-sm btn-delete" (click)="confirmDelete(ad)" title="Delete">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="pagination">
+      <button (click)="prevPage()" [disabled]="page === 0">← Prev</button>
+      <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="toast-container">
+  <div *ngFor="let t of toasts" class="toast" [ngClass]="t.type">{{ t.message }}</div>
+</div>
