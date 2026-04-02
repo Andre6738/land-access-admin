@@ -286,6 +286,10 @@ export class AdminApiService {
     return this.http.get(`${this.base}/referrals/codes`);
   }
 
+  backfillReferralCodes(): Observable<any> {
+    return this.http.post(`${this.base}/referrals/codes/backfill`, null);
+  }
+
   getReferralEvents(filters: {
     page?: number; size?: number; referrerEmail?: string; status?: string;
     dateFrom?: string; dateTo?: string;

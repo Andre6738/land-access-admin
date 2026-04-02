@@ -177,8 +177,13 @@
 
   <!-- ═══════ CODES ═══════ -->
   <div *ngIf="activeTab === 'codes'" class="tab-content">
-    <h2>Referral Codes</h2>
-    <p class="section-desc">Every user who signs up gets a unique referral code. When someone new registers using that code, a referral event is created. Codes can have a maximum usage limit or be unlimited. Codes are generated automatically during sign-up.</p>
+    <div class="section-header">
+      <div>
+        <h2>Referral Codes</h2>
+        <p class="section-desc">Every user who signs up gets a unique referral code. When someone new registers using that code, a referral event is created. Codes can have a maximum usage limit or be unlimited. Codes are generated automatically during sign-up.</p>
+      </div>
+      <button class="btn btn-primary" (click)="backfillCodes()">Generate Missing Codes</button>
+    </div>
     <div class="table-wrap">
       <table *ngIf="codes.length > 0">
         <thead>

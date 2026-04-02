@@ -247,6 +247,16 @@ export class ReferralsComponent implements OnInit {
     });
   }
 
+  backfillCodes(): void {
+    this.api.backfillReferralCodes().subscribe({
+      next: (res: any) => {
+        this.toast(`${res.codesCreated} referral code(s) created`, 'success');
+        this.loadCodes();
+      },
+      error: () => this.toast('Failed to backfill codes', 'error')
+    });
+  }
+
   // ── Events ──
 
   loadEvents(): void {
