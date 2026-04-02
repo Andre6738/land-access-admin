@@ -211,4 +211,85 @@ export class AdminApiService {
     const params = new HttpParams().set('enabled', enabled);
     return this.http.put(`${this.base}/config/adverts-enabled`, null, { params });
   }
+
+  // ── Referrals ──
+
+  getReferralToggles(): Observable<any> {
+    return this.http.get(`${this.base}/referrals/toggles`);
+  }
+
+  updateReferralToggles(toggles: { [key: string]: boolean }): Observable<any> {
+    return this.http.put(`${this.base}/referrals/toggles`, toggles);
+  }
+
+  getReferralCampaigns(filters: { page?: number; size?: number; name?: string; active?: boolean | null } = {}): Observable<any> {
+    let params = new HttpParams().set('page', filters.page ?? 0).set('size', filters.size ?? 50);
+    if (filters.name) params = params.set('name', filters.name);
+    if (filters.active !== null && filters.active !== undefined) params = params.set('active', filters.active);
+    return this.http.get(`${this.base}/referrals/campaigns`, { params });
+  }
+
+  getReferralCampaign(id: string): Observable<any> {
+    return this.http.get(`${this.base}/referrals/campaigns/${id}`);
+  }
+
+  createReferralCampaign(campaign: any): Observable<any> {
+    return this.http.post(`${this.base}/referrals/campaigns`, campaign);
+  }
+
+  updateReferralCampaign(id: string, campaign: any): Observable<any> {
+    return this.http.put(`${this.base}/referrals/campaigns/${id}`, campaign);
+  }
+
+  deleteReferralCampaign(id: string): Observable<any> {
+    return this.http.delete(`${this.base}/referrals/campaigns/${id}`);
+  }
+
+  toggleReferralCampaignActive(id: string): Observable<any> {
+    return this.http.post(`${this.base}/referrals/campaigns/${id}/toggle-active`, null);
+  }
+
+  getReferralRewardRules(): Observable<any> {
+    return this.http.get(`${this.base}/referrals/reward-rules`);
+  }
+
+  getReferralRewardRulesByCampaign(campaignId: string): Observable<any> {
+    return this.http.get(`${this.base}/referrals/reward-rules/campaign/${campaignId}`);
+  }
+
+  createReferralRewardRule(rule: any): Observable<any> {
+    return this.http.post(`${this.base}/referrals/reward-rules`, rule);
+  }
+
+  updateReferralRewardRule(id: string, rule: any): Observable<any> {
+    return this.http.put(`${this.base}/referrals/reward-rules/${id}`, rule);
+  }
+
+  deleteReferralRewardRule(id: string): Observable<any> {
+    return this.http.delete(`${this.base}/referrals/reward-rules/${id}`);
+  }
+
+  toggleReferralRewardRuleActive(id: string): Observable<any> {
+    return this.http.post(`${this.base}/referrals/reward-rules/${id}/toggle-active`, null);
+  }
+
+  getReferralCodes(): Observable<any> {
+    return this.http.get(`${this.base}/referrals/codes`);
+  }
+
+  getReferralEvents(filters: {
+    page?: number; size?: number; referrerEmail?: string; status?: string;
+    dateFrom?: string; dateTo?: string;
+  } = {}): Observable<any> {
+    let params = new HttpParams().set('page', filters.page ?? 0).set('size', filters.size ?? 50);
+    if (filters.referrerEmail) params = params.set('referrerEmail', filters.referrerEmail);
+    if (filters.status) params = params.set('status', filters.status);
+    if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
+    if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
+    return this.http.get(`${this.base}/referrals/events`, { params });
+  }
+
+  getReferralRedemptions(): Observable<any> {
+    return this.http.get(`${this.base}/referrals/redemptions`);
+  }
 }

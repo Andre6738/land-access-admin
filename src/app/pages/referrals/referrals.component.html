@@ -1,0 +1,257 @@
+<div class="referrals-page">
+  <!-- Toast notifications -->
+  <div class="toast-container">
+    <div *ngFor="let t of toasts" class="toast" [class.error]="t.type === 'error'">{{ t.message }}</div>
+  </div>
+
+  <h1>Referral Management</h1>
+
+  <!-- Feature Toggles -->
+  <div class="card toggle-card">
+    <h2>Feature Toggles</h2>
+    <p class="hint" *ngIf="!canEditToggles">Only the designated administrator may edit feature toggles.</p>
+    <div class="toggle-grid">
+      <div *ngFor="let key of toggleKeys" class="toggle-row">
+        <label class="toggle-label">
+          <input type="checkbox" [(ngModel)]="toggles[key]" [disabled]="!canEditToggles" />
+          <span>{{ prettyToggleKey(key) }}</span>
+        </label>
+      </div>
+    </div>
+    <button class="btn btn-primary" (click)="saveToggles()" *ngIf="canEditToggles">Save Toggles</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'campaigns'" (click)="switchTab('campaigns')">Campaigns</button>
+    <button [class.active]="activeTab === 'rules'" (click)="switchTab('rules')">Reward Rules</button>
+    <button [class.active]="activeTab === 'codes'" (click)="switchTab('codes')">Codes</button>
+    <button [class.active]="activeTab === 'events'" (click)="switchTab('events')">Events</button>
+    <button [class.active]="activeTab === 'redemptions'" (click)="switchTab('redemptions')">Redemptions</button>
+  </div>
+
+  <!-- ═══════ CAMPAIGNS ═══════ -->
+  <div *ngIf="activeTab === 'campaigns'" class="tab-content">
+    <div class="section-header">
+      <h2>Campaigns</h2>
+      <button class="btn btn-primary" (click)="openCreateCampaign()">+ New Campaign</button>
+    </div>
+
+    <!-- Campaign form -->
+    <div *ngIf="showCampaignForm" class="card form-card">
+      <h3>{{ editingCampaign ? 'Edit' : 'Create' }} Campaign</h3>
+      <div class="form-grid">
+        <div class="field"><label>Name</label><input [(ngModel)]="formCampaign.name" placeholder="Campaign name" /></div>
+        <div class="field full"><label>Description</label><textarea [(ngModel)]="formCampaign.description" rows="3" placeholder="How does this campaign work?"></textarea></div>
+        <div class="field"><label>Start Date</label><input type="datetime-local" [(ngModel)]="formCampaign.startDate" /></div>
+        <div class="field"><label>End Date</label><input type="datetime-local" [(ngModel)]="formCampaign.endDate" /></div>
+        <div class="field"><label><input type="checkbox" [(ngModel)]="formCampaign.active" /> Active</label></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" (click)="saveCampaign()">{{ editingCampaign ? 'Update' : 'Create' }}</button>
+        <button class="btn btn-secondary" (click)="cancelCampaignForm()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Campaign table -->
+    <div class="table-wrap">
+      <table *ngIf="campaigns.length > 0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Active</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Rules</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of campaigns">
+            <td>{{ c.name }}</td>
+            <td><span class="badge" [class.active]="c.active" [class.inactive]="!c.active">{{ c.active ? 'Active' : 'Inactive' }}</span></td>
+            <td>{{ c.startDate ? (c.startDate | date:'short') : '—' }}</td>
+            <td>{{ c.endDate ? (c.endDate | date:'short') : 'No end' }}</td>
+            <td>{{ c.rewardRules?.length || 0 }}</td>
+            <td class="actions-cell">
+              <button class="btn-sm" (click)="openEditCampaign(c)">Edit</button>
+              <button class="btn-sm" (click)="toggleCampaignActive(c)">{{ c.active ? 'Deactivate' : 'Activate' }}</button>
+              <button class="btn-sm btn-danger" (click)="deleteCampaign(c)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="campaigns.length === 0" class="empty">No campaigns found.</p>
+    </div>
+
+    <div class="pagination" *ngIf="campaignTotalPages > 1">
+      <button [disabled]="campaignPage === 0" (click)="campaignPage = campaignPage - 1; loadCampaigns()">← Prev</button>
+      <span>Page {{ campaignPage + 1 }} of {{ campaignTotalPages }}</span>
+      <button [disabled]="campaignPage >= campaignTotalPages - 1" (click)="campaignPage = campaignPage + 1; loadCampaigns()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ═══════ REWARD RULES ═══════ -->
+  <div *ngIf="activeTab === 'rules'" class="tab-content">
+    <div class="section-header">
+      <h2>Reward Rules</h2>
+      <button class="btn btn-primary" (click)="openCreateRule()">+ New Rule</button>
+    </div>
+
+    <!-- Rule form -->
+    <div *ngIf="showRuleForm" class="card form-card">
+      <h3>{{ editingRule ? 'Edit' : 'Create' }} Reward Rule</h3>
+      <div class="form-grid">
+        <div class="field">
+          <label>Campaign</label>
+          <select [(ngModel)]="formRule.campaignId">
+            <option *ngFor="let c of campaigns" [value]="c.id">{{ c.name }}</option>
+          </select>
+        </div>
+        <div class="field"><label>Name</label><input [(ngModel)]="formRule.name" placeholder="Rule name" /></div>
+        <div class="field">
+          <label>Reward Type</label>
+          <select [(ngModel)]="formRule.rewardType">
+            <option *ngFor="let t of rewardTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Reward Target</label>
+          <select [(ngModel)]="formRule.rewardTarget">
+            <option *ngFor="let t of rewardTargets" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="field"><label>Reward Value</label><input type="number" [(ngModel)]="formRule.rewardValue" min="0" /></div>
+        <div class="field"><label>Min Referrals Required</label><input type="number" [(ngModel)]="formRule.minReferrals" min="1" /></div>
+        <div class="field"><label>Max Redemptions/User</label><input type="number" [(ngModel)]="formRule.maxRedemptionsPerUser" placeholder="Unlimited" /></div>
+        <div class="field"><label><input type="checkbox" [(ngModel)]="formRule.repeatable" /> Repeatable</label></div>
+        <div class="field"><label><input type="checkbox" [(ngModel)]="formRule.active" /> Active</label></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" (click)="saveRule()">{{ editingRule ? 'Update' : 'Create' }}</button>
+        <button class="btn btn-secondary" (click)="cancelRuleForm()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Rules table -->
+    <div class="table-wrap">
+      <table *ngIf="rewardRules.length > 0">
+        <thead>
+          <tr>
+            <th>Campaign</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Target</th>
+            <th>Value</th>
+            <th>Min Referrals</th>
+            <th>Active</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of rewardRules">
+            <td>{{ getCampaignName(r.campaignId) }}</td>
+            <td>{{ r.name }}</td>
+            <td>{{ r.rewardType }}</td>
+            <td>{{ r.rewardTarget }}</td>
+            <td>{{ r.rewardValue }}</td>
+            <td>{{ r.minReferrals }}</td>
+            <td><span class="badge" [class.active]="r.active" [class.inactive]="!r.active">{{ r.active ? 'Active' : 'Inactive' }}</span></td>
+            <td class="actions-cell">
+              <button class="btn-sm" (click)="openEditRule(r)">Edit</button>
+              <button class="btn-sm" (click)="toggleRuleActive(r)">{{ r.active ? 'Deactivate' : 'Activate' }}</button>
+              <button class="btn-sm btn-danger" (click)="deleteRule(r)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="rewardRules.length === 0" class="empty">No reward rules found.</p>
+    </div>
+  </div>
+
+  <!-- ═══════ CODES ═══════ -->
+  <div *ngIf="activeTab === 'codes'" class="tab-content">
+    <h2>Referral Codes</h2>
+    <div class="table-wrap">
+      <table *ngIf="codes.length > 0">
+        <thead>
+          <tr><th>Code</th><th>User</th><th>Active</th><th>Uses</th><th>Max Uses</th><th>Created</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of codes">
+            <td class="code-cell">{{ c.code }}</td>
+            <td>{{ c.userEmail }}</td>
+            <td><span class="badge" [class.active]="c.active" [class.inactive]="!c.active">{{ c.active ? 'Active' : 'Inactive' }}</span></td>
+            <td>{{ c.usageCount }}</td>
+            <td>{{ c.maxUses ?? '∞' }}</td>
+            <td>{{ c.createdAt | date:'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="codes.length === 0" class="empty">No referral codes generated yet.</p>
+    </div>
+  </div>
+
+  <!-- ═══════ EVENTS ═══════ -->
+  <div *ngIf="activeTab === 'events'" class="tab-content">
+    <h2>Referral Events</h2>
+    <div class="filters">
+      <input [(ngModel)]="filterReferrerEmail" placeholder="Referrer email…" />
+      <select [(ngModel)]="filterStatus">
+        <option value="">All statuses</option>
+        <option *ngFor="let s of referralStatuses" [value]="s">{{ s }}</option>
+      </select>
+      <button class="btn btn-primary" (click)="applyEventFilters()">Filter</button>
+      <button class="btn btn-secondary" (click)="clearEventFilters()">Clear</button>
+    </div>
+
+    <div class="table-wrap">
+      <table *ngIf="events.length > 0">
+        <thead>
+          <tr><th>Referrer</th><th>Referred</th><th>Code</th><th>Campaign</th><th>Status</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of events">
+            <td>{{ e.referrerEmail }}</td>
+            <td>{{ e.referredEmail }}</td>
+            <td class="code-cell">{{ e.referralCodeValue }}</td>
+            <td>{{ e.campaignName || '—' }}</td>
+            <td><span class="badge status-{{ e.status?.toLowerCase() }}">{{ e.status }}</span></td>
+            <td>{{ e.createdAt | date:'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="events.length === 0" class="empty">No referral events found.</p>
+    </div>
+
+    <div class="pagination" *ngIf="eventTotalPages > 1">
+      <button [disabled]="eventPage === 0" (click)="eventPage = eventPage - 1; loadEvents()">← Prev</button>
+      <span>Page {{ eventPage + 1 }} of {{ eventTotalPages }}</span>
+      <button [disabled]="eventPage >= eventTotalPages - 1" (click)="eventPage = eventPage + 1; loadEvents()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ═══════ REDEMPTIONS ═══════ -->
+  <div *ngIf="activeTab === 'redemptions'" class="tab-content">
+    <h2>Reward Redemptions</h2>
+    <div class="table-wrap">
+      <table *ngIf="redemptions.length > 0">
+        <thead>
+          <tr><th>User</th><th>Rule</th><th>Type</th><th>Value</th><th>Status</th><th>Granted</th><th>Created</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of redemptions">
+            <td>{{ r.userEmail }}</td>
+            <td>{{ r.rewardRuleName }}</td>
+            <td>{{ r.rewardType }}</td>
+            <td>{{ r.rewardValue }}</td>
+            <td><span class="badge status-{{ r.status?.toLowerCase() }}">{{ r.status }}</span></td>
+            <td>{{ r.grantedAt ? (r.grantedAt | date:'short') : '—' }}</td>
+            <td>{{ r.createdAt | date:'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="redemptions.length === 0" class="empty">No reward redemptions yet.</p>
+    </div>
+  </div>
+</div>
