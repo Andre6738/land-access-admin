@@ -38,6 +38,14 @@ export class UsersComponent implements OnInit {
   // Toast
   toasts: { message: string; type: string }[] = [];
 
+  // Transaction history dialog
+  showTxnDialog = false;
+  txnEmail = '';
+  txnList: any[] = [];
+  txnLoading = false;
+  txnPage = 0;
+  txnTotalPages = 0;
+
   constructor(private api: AdminApiService) {}
 
   ngOnInit(): void {
@@ -162,6 +170,31 @@ export class UsersComponent implements OnInit {
       },
       error: () => {
         this.showToast(`Failed to ${this.grantMode} credits`, 'error');
+      }
+    });
+  }
+
+  openTransactions(email: string): void {
+    this.txnEmail = email;
+    this.txnList = [];
+    this.txnPage = 0;
+    this.txnTotalPages = 0;
+    this.showTxnDialog = true;
+    this.loadTxnPage(0);
+  }
+
+  loadTxnPage(page: number): void {
+    this.txnLoading = true;
+    this.api.getUserTransactions(this.txnEmail, page, 20).subscribe({
+      next: (data: any) => {
+        this.txnList = data.content ?? [];
+        this.txnPage = page;
+        this.txnTotalPages = data.totalPages ?? 1;
+        this.txnLoading = false;
+      },
+      error: () => {
+        this.txnLoading = false;
+        this.showToast('Failed to load transactions', 'error');
       }
     });
   }

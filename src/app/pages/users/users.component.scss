@@ -181,6 +181,7 @@
 .btn-deduct { background: #e67e22; color: #fff; }
 .btn-ban { background: #e94560; color: #fff; }
 .btn-unban { background: #28a745; color: #fff; }
+.btn-txn { background: #6c63ff; color: #fff; }
 
 // Dialog
 .dialog-overlay {
@@ -311,4 +312,267 @@
     color: #666;
     margin-left: 0.6rem;
   }
+}
+
+// ── Transaction History Dialog ──
+
+.txn-dialog {
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.txn-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0;
+
+  h2 { margin: 0; }
+}
+
+.btn-close-dialog {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+  padding: 0 0.3rem;
+  line-height: 1;
+
+  &:hover { color: #333; }
+}
+
+.txn-user-label {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0.2rem 0 1rem;
+}
+
+.txn-loading, .txn-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.txn-list {
+  overflow-y: auto;
+  max-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.txn-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0.8rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #ccc;
+
+  &.txn-topup     { border-left-color: #28a745; }
+  &.txn-deduction  { border-left-color: #dc3545; }
+  &.txn-refund     { border-left-color: #0066cc; }
+  &.txn-adjustment { border-left-color: #e67e22; }
+}
+
+.txn-row-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+
+  .txn-date {
+    font-size: 0.75rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .txn-desc {
+    font-size: 0.85rem;
+    color: #333;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.txn-row-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  margin-left: 0.8rem;
+}
+
+.txn-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+
+  &.badge-topup      { background: #d4edda; color: #155724; }
+  &.badge-deduction   { background: #f8d7da; color: #721c24; }
+  &.badge-refund      { background: #cce5ff; color: #004085; }
+  &.badge-adjustment  { background: #fff3cd; color: #856404; }
+}
+
+.txn-credits {
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+
+  &.positive { color: #28a745; }
+  &.negative { color: #dc3545; }
+}
+
+.txn-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #eee;
+
+  button {
+    padding: 0.35rem 0.8rem;
+    background: #fff;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    &:not(:disabled):hover {
+      background: #f0f0f0;
+    }
+  }
+
+  span {
+    font-size: 0.82rem;
+    color: #666;
+    font-weight: 600;
+  }
+}
+
+.page-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h1 { margin: 0; color: #1a1a2e; }
+}
+
+.btn-export {
+  padding: 0.45rem 1rem;
+  background: #fff;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+
+  &:hover { background: #f0f0f0; }
+}
+
+// ── Confirm Dialog ──
+
+.confirm-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+
+.confirm-dialog {
+  background: #fff;
+  padding: 1.8rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+  h3 { margin: 0 0 0.8rem; color: #1a1a2e; }
+  p { margin: 0 0 1.5rem; color: #555; font-size: 0.92rem; }
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.btn-cancel-confirm {
+  padding: 0.5rem 1rem;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-danger-confirm {
+  padding: 0.5rem 1rem;
+  background: #e94560;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+
+  &:hover { background: #d43350; }
+}
+
+// ── Toast ──
+
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toast {
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  background: #333;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease;
+
+  &.success { background: #28a745; }
+  &.error { background: #e94560; }
+  &.info { background: #0f3460; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

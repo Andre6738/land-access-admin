@@ -41,6 +41,11 @@ export class AdminApiService {
     return this.http.post(`${this.base}/users/${encodeURIComponent(email)}/grant-credits`, null, { params });
   }
 
+  getUserTransactions(email: string, page = 0, size = 50): Observable<any> {
+    const params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get(`${this.base}/users/${encodeURIComponent(email)}/transactions`, { params });
+  }
+
   // ── Activity ──
   getActivity(filters: {
     page?: number;

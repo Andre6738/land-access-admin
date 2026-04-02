@@ -54,6 +54,7 @@
         <td>R {{ ((u.totalMoneyPaidCents ?? 0) / 100).toFixed(2) }}</td>
         <td>{{ u.createdAt | date:'d MMM y' }}</td>
         <td class="actions">
+          <button class="btn-small btn-txn" (click)="openTransactions(u.email)">Transactions</button>
           <button class="btn-small btn-grant" (click)="openGrant(u.email)">Grant</button>
           <button class="btn-small btn-deduct" (click)="openDeduct(u.email)">Deduct</button>
           <button *ngIf="u.status !== 'BANNED'" class="btn-small btn-ban" (click)="ban(u.email)">Ban</button>
@@ -115,6 +116,52 @@
     <div class="confirm-actions">
       <button class="btn-cancel-confirm" (click)="showConfirmDialog = false">Cancel</button>
       <button class="btn-danger-confirm" (click)="executeConfirm()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Transaction History Dialog -->
+<div class="dialog-overlay" *ngIf="showTxnDialog" (click)="showTxnDialog = false">
+  <div class="dialog txn-dialog" (click)="$event.stopPropagation()">
+    <div class="txn-dialog-header">
+      <h2>Transaction History</h2>
+      <button class="btn-close-dialog" (click)="showTxnDialog = false">&times;</button>
+    </div>
+    <p class="txn-user-label">{{ txnEmail }}</p>
+
+    <div *ngIf="txnLoading" class="txn-loading">Loading...</div>
+
+    <div *ngIf="!txnLoading && txnList.length === 0" class="txn-empty">No transactions found.</div>
+
+    <div *ngIf="!txnLoading && txnList.length > 0" class="txn-list">
+      <div *ngFor="let tx of txnList" class="txn-row"
+           [class.txn-topup]="tx.txnType === 'TOP_UP'"
+           [class.txn-deduction]="tx.txnType === 'DEDUCTION'"
+           [class.txn-refund]="tx.txnType === 'REFUND'"
+           [class.txn-adjustment]="tx.txnType === 'ADJUSTMENT'">
+        <div class="txn-row-left">
+          <span class="txn-date">{{ tx.createdAt | date:'d MMM y, HH:mm' }}</span>
+          <span class="txn-desc">{{ tx.description || tx.txnType }}</span>
+        </div>
+        <div class="txn-row-right">
+          <span class="txn-badge"
+                [class.badge-topup]="tx.txnType === 'TOP_UP'"
+                [class.badge-deduction]="tx.txnType === 'DEDUCTION'"
+                [class.badge-refund]="tx.txnType === 'REFUND'"
+                [class.badge-adjustment]="tx.txnType === 'ADJUSTMENT'">
+            {{ tx.txnType === 'TOP_UP' ? 'Top-up' : tx.txnType === 'DEDUCTION' ? 'Deduction' : tx.txnType === 'REFUND' ? 'Refund' : 'Adjustment' }}
+          </span>
+          <span class="txn-credits" [class.positive]="tx.creditsDelta > 0" [class.negative]="tx.creditsDelta < 0">
+            {{ tx.creditsDelta > 0 ? '+' : '' }}{{ tx.creditsDelta }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="txnTotalPages > 1" class="txn-pagination">
+      <button [disabled]="txnPage === 0" (click)="loadTxnPage(txnPage - 1)">‹ Prev</button>
+      <span>{{ txnPage + 1 }} / {{ txnTotalPages }}</span>
+      <button [disabled]="txnPage >= txnTotalPages - 1" (click)="loadTxnPage(txnPage + 1)">Next ›</button>
     </div>
   </div>
 </div>
