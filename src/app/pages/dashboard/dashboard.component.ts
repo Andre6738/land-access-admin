@@ -9,8 +9,11 @@ import { AuthService } from '../../services/auth.service';
 })
 export class DashboardComponent {
   sidebarOpen = false;
+  userEmail = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) {
+    this.auth.user$.subscribe(u => this.userEmail = u?.email || '');
+  }
 
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
