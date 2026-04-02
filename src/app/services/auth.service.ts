@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Auth, signInWithPopup, GoogleAuthProvider, signOut, User, user } from '@angular/fire/auth';
+import { Auth, signInWithPopup, GoogleAuthProvider, signOut, User, user, browserSessionPersistence, setPersistence } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -16,6 +16,9 @@ export class AuthService {
   private onUserActivity = () => this.markActivity();
 
   constructor(private fireAuth: Auth, private router: Router, private zone: NgZone) {
+    // Session-only persistence: auth is cleared when browser/tab closes
+    setPersistence(this.fireAuth, browserSessionPersistence).catch(() => {});
+
     this.user$ = user(this.fireAuth);
 
     this.user$.subscribe(u => {
@@ -91,12 +94,12 @@ export class AuthService {
   }
 
   private markActivity(): void {
-    try { localStorage.setItem(this.LAST_ACTIVITY_KEY, Date.now().toString()); } catch {}
+    try { sessionStorage.setItem(this.LAST_ACTIVITY_KEY, Date.now().toString()); } catch {}
   }
 
   private readLastActivity(): number | null {
     try {
-      const v = localStorage.getItem(this.LAST_ACTIVITY_KEY);
+      const v = sessionStorage.getItem(this.LAST_ACTIVITY_KEY);
       return v ? Number(v) : null;
     } catch { return null; }
   }
