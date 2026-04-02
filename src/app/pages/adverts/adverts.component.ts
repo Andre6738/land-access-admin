@@ -30,6 +30,7 @@ export class AdvertsComponent implements OnInit {
   adverts: Advert[] = [];
   loading = true;
   advertsEnabled = true;
+  canEditToggle = false;
   toasts: { message: string; type: string }[] = [];
 
   // Filters
@@ -85,15 +86,19 @@ export class AdvertsComponent implements OnInit {
 
   loadConfig(): void {
     this.api.getAdvertsEnabled().subscribe({
-      next: (r) => this.advertsEnabled = r.enabled,
+      next: (r: any) => {
+        this.advertsEnabled = r.enabled;
+        this.canEditToggle = r.canEditToggle;
+      },
       error: () => this.advertsEnabled = true
     });
   }
 
   toggleAdvertsEnabled(): void {
     this.api.updateAdvertsEnabled(!this.advertsEnabled).subscribe({
-      next: (r) => {
+      next: (r: any) => {
         this.advertsEnabled = r.enabled;
+        this.canEditToggle = r.canEditToggle;
         this.showToast(`Adverts ${this.advertsEnabled ? 'enabled' : 'disabled'}`, 'success');
       },
       error: () => this.showToast('Failed to update setting', 'error')
