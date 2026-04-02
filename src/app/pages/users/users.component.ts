@@ -45,6 +45,8 @@ export class UsersComponent implements OnInit {
   txnLoading = false;
   txnPage = 0;
   txnTotalPages = 0;
+  txnTypeFilter = '';
+  txnTypes = ['TOP_UP', 'DEDUCTION', 'REFUND', 'ADJUSTMENT'];
 
   constructor(private api: AdminApiService) {}
 
@@ -179,13 +181,14 @@ export class UsersComponent implements OnInit {
     this.txnList = [];
     this.txnPage = 0;
     this.txnTotalPages = 0;
+    this.txnTypeFilter = '';
     this.showTxnDialog = true;
     this.loadTxnPage(0);
   }
 
   loadTxnPage(page: number): void {
     this.txnLoading = true;
-    this.api.getUserTransactions(this.txnEmail, page, 20).subscribe({
+    this.api.getUserTransactions(this.txnEmail, page, 20, this.txnTypeFilter || undefined).subscribe({
       next: (data: any) => {
         this.txnList = data.content ?? [];
         this.txnPage = page;

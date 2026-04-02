@@ -41,8 +41,9 @@ export class AdminApiService {
     return this.http.post(`${this.base}/users/${encodeURIComponent(email)}/grant-credits`, null, { params });
   }
 
-  getUserTransactions(email: string, page = 0, size = 50): Observable<any> {
-    const params = new HttpParams().set('page', page).set('size', size);
+  getUserTransactions(email: string, page = 0, size = 50, txnType?: string): Observable<any> {
+    let params = new HttpParams().set('page', page).set('size', size);
+    if (txnType) { params = params.set('txnType', txnType); }
     return this.http.get(`${this.base}/users/${encodeURIComponent(email)}/transactions`, { params });
   }
 

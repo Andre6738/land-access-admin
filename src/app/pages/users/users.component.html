@@ -129,6 +129,15 @@
     </div>
     <p class="txn-user-label">{{ txnEmail }}</p>
 
+    <div class="txn-filter-row">
+      <select [(ngModel)]="txnTypeFilter" (ngModelChange)="loadTxnPage(0)" class="txn-type-select">
+        <option value="">All Types</option>
+        <option *ngFor="let t of txnTypes" [value]="t">
+          {{ t === 'TOP_UP' ? 'Top-up' : t === 'DEDUCTION' ? 'Deduction' : t === 'REFUND' ? 'Refund' : 'Adjustment' }}
+        </option>
+      </select>
+    </div>
+
     <div *ngIf="txnLoading" class="txn-loading">Loading...</div>
 
     <div *ngIf="!txnLoading && txnList.length === 0" class="txn-empty">No transactions found.</div>

@@ -347,7 +347,27 @@
 .txn-user-label {
   font-size: 0.85rem;
   color: #666;
-  margin: 0.2rem 0 1rem;
+  margin: 0.2rem 0 0.8rem;
+}
+
+.txn-filter-row {
+  margin-bottom: 0.8rem;
+}
+
+.txn-type-select {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: #fff;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: #0f3460;
+  }
 }
 
 .txn-loading, .txn-empty {
