@@ -83,7 +83,7 @@
           <tr *ngFor="let c of campaigns">
             <td>{{ c.name }}</td>
             <td><span class="badge" [class.active]="c.active" [class.inactive]="!c.active">{{ c.active ? 'Active' : 'Inactive' }}</span></td>
-            <td>{{ c.startDate ? (c.startDate | date:'short') : '—' }}</td>
+            <td>{{ c.startDate ? (c.startDate | date:'short') : '-' }}</td>
             <td>{{ c.endDate ? (c.endDate | date:'short') : 'No end' }}</td>
             <td>{{ c.rewardRules?.length || 0 }}</td>
             <td class="actions-cell">
@@ -238,7 +238,7 @@
             <td>{{ e.referrerEmail }}</td>
             <td>{{ e.referredEmail }}</td>
             <td class="code-cell">{{ e.referralCodeValue }}</td>
-            <td>{{ e.campaignName || '—' }}</td>
+            <td>{{ e.campaignName || '-' }}</td>
             <td><span class="badge status-{{ e.status?.toLowerCase() }}">{{ e.status }}</span></td>
             <td>{{ e.createdAt | date:'short' }}</td>
           </tr>
@@ -270,7 +270,7 @@
             <td>{{ r.rewardType }}</td>
             <td>{{ r.rewardValue }}</td>
             <td><span class="badge status-{{ r.status?.toLowerCase() }}">{{ r.status }}</span></td>
-            <td>{{ r.grantedAt ? (r.grantedAt | date:'short') : '—' }}</td>
+            <td>{{ r.grantedAt ? (r.grantedAt | date:'short') : '-' }}</td>
             <td>{{ r.createdAt | date:'short' }}</td>
           </tr>
         </tbody>

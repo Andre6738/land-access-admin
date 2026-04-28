@@ -69,7 +69,7 @@ export class AuthService {
         return;
       }
 
-      // User is active — proactively refresh token if near expiry
+      // User is active - proactively refresh token if near expiry
       const u = this.fireAuth.currentUser;
       if (u) {
         try {
