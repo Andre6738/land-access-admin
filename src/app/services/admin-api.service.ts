@@ -36,6 +36,11 @@ export class AdminApiService {
     return this.http.post(`${this.base}/users/${encodeURIComponent(email)}/unban`, null);
   }
 
+  hardDeleteUser(email: string): Observable<any> {
+    const params = new HttpParams().set('confirmEmail', email);
+    return this.http.delete(`${this.base}/users/${encodeURIComponent(email)}`, { params });
+  }
+
   grantCredits(email: string, amount: number, reason: string): Observable<any> {
     const params = new HttpParams().set('amount', amount).set('reason', reason);
     return this.http.post(`${this.base}/users/${encodeURIComponent(email)}/grant-credits`, null, { params });
@@ -68,6 +73,10 @@ export class AdminApiService {
     if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
     if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
     return this.http.get(`${this.base}/activity`, { params });
+  }
+
+  deleteActivity(id: string): Observable<any> {
+    return this.http.delete(`${this.base}/activity/${encodeURIComponent(id)}`);
   }
 
   // ── Config ──

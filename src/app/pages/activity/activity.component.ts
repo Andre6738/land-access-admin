@@ -111,6 +111,81 @@ export class ActivityComponent implements OnInit {
     this.downloadCsv([headers, ...rows], 'winserve-activity');
   }
 
+  // ── Delete activity entries ──
+  selected: { [id: string]: boolean } = {};
+  showDeleteDialog = false;
+  deleteIds: string[] = [];
+  deleting = false;
+  toasts: { message: string; type: string }[] = [];
+
+  get selectedIds(): string[] {
+    return Object.keys(this.selected).filter(k => this.selected[k]);
+  }
+
+  get selectedCount(): number {
+    return this.selectedIds.length;
+  }
+
+  get allOnPageSelected(): boolean {
+    return this.searches.length > 0 && this.searches.every(s => this.selected[s.id]);
+  }
+
+  toggleAll(checked: boolean): void {
+    for (const s of this.searches) this.selected[s.id] = checked;
+  }
+
+  openDeleteOne(id: string): void {
+    this.deleteIds = [id];
+    this.showDeleteDialog = true;
+  }
+
+  openDeleteSelected(): void {
+    if (this.selectedCount === 0) return;
+    this.deleteIds = this.selectedIds;
+    this.showDeleteDialog = true;
+  }
+
+  confirmDelete(): void {
+    this.deleting = true;
+    let remaining = this.deleteIds.length;
+    let failed = 0;
+    const total = remaining;
+    for (const id of this.deleteIds) {
+      this.api.deleteActivity(id).subscribe({
+        next: () => {
+          remaining--;
+          if (remaining === 0) this.finishDelete(total, failed);
+        },
+        error: () => {
+          failed++;
+          remaining--;
+          if (remaining === 0) this.finishDelete(total, failed);
+        }
+      });
+    }
+  }
+
+  private finishDelete(total: number, failed: number): void {
+    this.deleting = false;
+    this.showDeleteDialog = false;
+    this.selected = {};
+    if (failed === 0) {
+      this.showToast(`Deleted ${total} activity entr${total === 1 ? 'y' : 'ies'}`, 'success');
+    } else {
+      this.showToast(`Deleted ${total - failed} of ${total}; ${failed} failed`, failed === total ? 'error' : 'info');
+    }
+    this.load();
+  }
+
+  showToast(message: string, type: string = 'info'): void {
+    const toast = { message, type };
+    this.toasts.push(toast);
+    setTimeout(() => {
+      const idx = this.toasts.indexOf(toast);
+      if (idx > -1) this.toasts.splice(idx, 1);
+    }, 4000);
+  }
+
   private downloadCsv(data: any[][], filename: string): void {
     const csv = data.map(row => row.map((v: any) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });

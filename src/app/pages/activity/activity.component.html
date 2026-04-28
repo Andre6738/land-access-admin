@@ -1,10 +1,15 @@
 <div class="page">
   <div class="page-title-row">
     <h1>Search Activity</h1>
-    <button *ngIf="searches.length" class="btn-export" (click)="exportCsv()" title="Export current page to CSV">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Export CSV
-    </button>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <button *ngIf="selectedCount > 0" class="btn-export" style="background: #7f1d1d;" (click)="openDeleteSelected()" title="Delete selected entries">
+        Delete Selected ({{ selectedCount }})
+      </button>
+      <button *ngIf="searches.length" class="btn-export" (click)="exportCsv()" title="Export current page to CSV">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
+    </div>
   </div>
 
   <div class="filter-bar">
@@ -44,6 +49,9 @@
   <table *ngIf="!loading && searches.length" class="data-table">
     <thead>
       <tr>
+        <th style="width: 30px;">
+          <input type="checkbox" [checked]="allOnPageSelected" (change)="toggleAll($any($event.target).checked)" title="Select all on page" />
+        </th>
         <th>Email</th>
         <th>LPI Code</th>
         <th>Deeds Office</th>
@@ -51,10 +59,12 @@
         <th>Success</th>
         <th>Cost</th>
         <th>Date</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let s of searches">
+        <td><input type="checkbox" [(ngModel)]="selected[s.id]" /></td>
         <td>{{ s.email }}</td>
         <td class="mono">{{ s.lpiCode }}</td>
         <td>{{ s.deedsOffice }}</td>
@@ -66,6 +76,9 @@
         </td>
         <td>{{ s.costCredits ?? '-' }}</td>
         <td>{{ s.createdAt | date:'d MMM y HH:mm' }}</td>
+        <td>
+          <button class="btn-row-delete" (click)="openDeleteOne(s.id)" title="Delete this activity entry">Delete</button>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -86,5 +99,33 @@
     <button [disabled]="page >= totalPages - 1" (click)="goToPage(totalPages - 1)" title="Last page">»</button>
 
     <span class="page-info">Page {{ page + 1 }} of {{ totalPages }}</span>
+  </div>
+</div>
+
+<!-- Delete confirmation -->
+<div class="dialog-overlay" *ngIf="showDeleteDialog" (click)="showDeleteDialog = false"
+     style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+  <div class="dialog" (click)="$event.stopPropagation()"
+       style="background: #fff; padding: 2rem; border-radius: 12px; max-width: 480px; width: 90%;">
+    <h2 style="color: #b91c1c; margin-top: 0;">Delete activity {{ deleteIds.length === 1 ? 'entry' : 'entries' }}</h2>
+    <p>You are about to permanently delete <strong>{{ deleteIds.length }}</strong> activity entr{{ deleteIds.length === 1 ? 'y' : 'ies' }}.</p>
+    <p style="color: #b91c1c; font-weight: 600;">This cannot be undone. Cached WinDeed responses for these searches will be lost.</p>
+    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
+      <button (click)="showDeleteDialog = false" [disabled]="deleting"
+              style="padding: 8px 16px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer;">Cancel</button>
+      <button (click)="confirmDelete()" [disabled]="deleting"
+              style="padding: 8px 16px; border-radius: 6px; border: none; background: #b91c1c; color: #fff; cursor: pointer;">
+        {{ deleting ? 'Deleting...' : 'Delete' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1100; display: flex; flex-direction: column; gap: 8px;">
+  <div *ngFor="let t of toasts"
+       [style.background]="t.type === 'error' ? '#b91c1c' : t.type === 'success' ? '#15803d' : '#0f3460'"
+       style="color: #fff; padding: 10px 16px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    {{ t.message }}
   </div>
 </div>

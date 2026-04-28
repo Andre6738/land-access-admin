@@ -59,6 +59,7 @@
           <button class="btn-small btn-deduct" (click)="openDeduct(u.email)">Deduct</button>
           <button *ngIf="u.status !== 'BANNED'" class="btn-small btn-ban" (click)="ban(u.email)">Ban</button>
           <button *ngIf="u.status === 'BANNED'" class="btn-small btn-unban" (click)="unban(u.email)">Unban</button>
+          <button class="btn-small btn-delete" (click)="openHardDelete(u.email)" title="Permanently delete user and all their data">Delete</button>
         </td>
       </tr>
     </tbody>
@@ -178,4 +179,35 @@
 <!-- Toasts -->
 <div class="toast-container">
   <div *ngFor="let t of toasts" class="toast" [ngClass]="t.type">{{ t.message }}</div>
+</div>
+
+<!-- Hard Delete Dialog -->
+<div class="dialog-overlay" *ngIf="showDeleteDialog" (click)="showDeleteDialog = false">
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <h2 style="color: #b91c1c;">Permanently Delete User</h2>
+    <p>You are about to <strong>permanently delete</strong> <code>{{ deleteEmail }}</code> and ALL of their data:</p>
+    <ul style="margin: 8px 0 16px 20px; line-height: 1.6;">
+      <li>Account, credit wallet and full transaction ledger</li>
+      <li>Search history and bulk searches</li>
+      <li>Generated documents and document records</li>
+      <li>Referral codes, referrals and reward redemptions</li>
+      <li>User settings and notifications</li>
+    </ul>
+    <p style="color: #b91c1c; font-weight: 600;">This cannot be undone.</p>
+    <p>Note: this only removes server data. The Firebase Auth user must be deleted from the Firebase console separately.</p>
+
+    <div class="form-group">
+      <label>Type <strong>{{ deleteEmail }}</strong> to confirm:</label>
+      <input type="text" [(ngModel)]="deleteConfirmText" placeholder="Confirm by typing the email" autocomplete="off" />
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn-cancel" (click)="showDeleteDialog = false" [disabled]="deleting">Cancel</button>
+      <button class="btn-confirm btn-deduct-confirm"
+              [disabled]="deleting || deleteConfirmText.trim().toLowerCase() !== deleteEmail.toLowerCase()"
+              (click)="confirmHardDelete()">
+        {{ deleting ? 'Deleting...' : 'Delete Permanently' }}
+      </button>
+    </div>
+  </div>
 </div>

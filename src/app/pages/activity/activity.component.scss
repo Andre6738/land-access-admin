@@ -204,3 +204,20 @@
     margin-left: 0.6rem;
   }
 }
+
+.btn-row-delete {
+  padding: 4px 10px;
+  background: #7f1d1d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  &:hover { opacity: 0.85; }
+}
+
+
+.btn-row-delete { padding: 4px 10px; background: #7f1d1d; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 0.78rem; font-weight: 600; }
+.btn-row-delete:hover { opacity: 0.85; }
+

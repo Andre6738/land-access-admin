@@ -139,6 +139,38 @@ export class UsersComponent implements OnInit {
     this.showConfirmDialog = true;
   }
 
+  // Hard-delete dialog state
+  showDeleteDialog = false;
+  deleteEmail = '';
+  deleteConfirmText = '';
+  deleting = false;
+
+  openHardDelete(email: string): void {
+    this.deleteEmail = email;
+    this.deleteConfirmText = '';
+    this.showDeleteDialog = true;
+  }
+
+  confirmHardDelete(): void {
+    if (this.deleteConfirmText.trim().toLowerCase() !== this.deleteEmail.toLowerCase()) {
+      this.showToast('Confirmation email does not match', 'error');
+      return;
+    }
+    this.deleting = true;
+    this.api.hardDeleteUser(this.deleteEmail).subscribe({
+      next: () => {
+        this.deleting = false;
+        this.showDeleteDialog = false;
+        this.showToast(`${this.deleteEmail} and all their data have been permanently deleted`, 'success');
+        this.loadUsers();
+      },
+      error: (err) => {
+        this.deleting = false;
+        this.showToast(err?.error?.message || 'Failed to delete user', 'error');
+      }
+    });
+  }
+
   executeConfirm(): void {
     if (this.confirmAction) this.confirmAction();
     this.showConfirmDialog = false;
