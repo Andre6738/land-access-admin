@@ -164,14 +164,30 @@ body {
     -webkit-overflow-scrolling: touch;
   }
 
+  // Make the table itself a scrollable block, but keep the inner
+  // thead/tbody/tr/td as proper table elements so columns still
+  // render correctly. Using width: max-content with min-width: 100%
+  // lets the inner table grow as wide as its content while still
+  // filling the viewport when there's room.
   .data-table {
     display: block;
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
 
+    thead,
+    tbody {
+      display: table;
+      width: max-content;
+      min-width: 100%;
+      table-layout: auto;
+      border-collapse: collapse;
+    }
+
+    tr { display: table-row; }
     th, td {
+      display: table-cell;
+      white-space: nowrap;
       padding: 0.55rem 0.7rem !important;
       font-size: 0.78rem !important;
     }
