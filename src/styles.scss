@@ -147,3 +147,130 @@ body {
   from { opacity: 0; transform: scale(0.95); }
   to   { opacity: 1; transform: scale(1); }
 }
+
+// ==========================================================
+// Global mobile-friendly rules for shared admin page classes.
+// These piggyback on Angular's global stylesheet so they apply
+// across every component without per-component edits.
+// ==========================================================
+
+// Make data tables horizontally scrollable on small screens so
+// wide tables (Activity, Users, Bulk Uploads, Generations,
+// Infrastructure) don't blow out the viewport.
+@media (max-width: 768px) {
+  .table-container,
+  .table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+
+    th, td {
+      padding: 0.55rem 0.7rem !important;
+      font-size: 0.78rem !important;
+    }
+  }
+
+  // Filter rows: stack inputs vertically and let them fill width.
+  .filter-row,
+  .filters-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+
+    input[type="text"],
+    input[type="email"],
+    input[type="search"],
+    input[type="date"],
+    select {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box;
+    }
+
+    .date-label {
+      width: 100%;
+      flex-wrap: wrap;
+
+      input[type="date"] { flex: 1; }
+    }
+
+    .btn-filter,
+    .btn-clear,
+    button {
+      width: 100%;
+    }
+  }
+
+  .filter-bar {
+    padding: 0.75rem !important;
+  }
+
+  // Action buttons in table rows: wrap and shrink instead of overflowing.
+  .actions {
+    flex-wrap: wrap;
+    gap: 0.3rem !important;
+  }
+
+  .btn-small {
+    padding: 0.3rem 0.5rem !important;
+    font-size: 0.72rem !important;
+  }
+
+  // Dialogs: use most of the viewport on small screens.
+  .dialog,
+  .confirm-dialog {
+    max-width: calc(100vw - 1.5rem) !important;
+    width: calc(100vw - 1.5rem) !important;
+    padding: 1.25rem !important;
+    max-height: calc(100vh - 1.5rem);
+    overflow-y: auto;
+  }
+
+  .dialog-overlay,
+  .confirm-overlay {
+    padding: 0.75rem;
+  }
+
+  // Pagination: tighter buttons on mobile.
+  .pagination {
+    gap: 0.25rem;
+
+    button {
+      min-width: 28px !important;
+      padding: 0.3rem 0.5rem !important;
+      font-size: 0.75rem !important;
+    }
+
+    .page-info {
+      width: 100%;
+      text-align: center;
+      margin-left: 0 !important;
+      margin-top: 0.4rem;
+    }
+  }
+
+  // Toast container should not be flush with the screen edge.
+  .toast-container {
+    top: 0.5rem !important;
+    right: 0.5rem !important;
+    left: 0.5rem !important;
+  }
+
+  .toast {
+    max-width: 100% !important;
+    font-size: 0.8rem !important;
+  }
+
+  // Page title rows: allow wrap so title + action buttons stack.
+  .page-title-row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
