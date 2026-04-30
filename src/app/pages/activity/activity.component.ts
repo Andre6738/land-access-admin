@@ -22,7 +22,7 @@ export class ActivityComponent implements OnInit {
   filterDateFrom = '';
   filterDateTo = '';
 
-  deedsOffices = ['Johannesburg', 'Pretoria', 'Cape Town', 'Pietermaritzburg', 'Bloemfontein'];
+  deedsOffices = ['Johannesburg', 'Pretoria', 'Cape Town', 'Pietermaritzburg', 'Bloemfontein', 'Kimberley', 'King Williams Town', 'Mpumalanga', 'Umtata', 'Vryburg', 'Limpopo'];
 
   constructor(private api: AdminApiService) {}
 
