@@ -154,39 +154,40 @@ body {
 // across every component without per-component edits.
 // ==========================================================
 
-// Make data tables horizontally scrollable on small screens so
-// wide tables (Activity, Users, Bulk Uploads, Generations,
-// Infrastructure) don't blow out the viewport.
+// Horizontal scroll wrapper for wide data tables. Applies at all
+// widths but only scrolls when the table is wider than its parent,
+// so desktop layouts are unaffected (tables fit and never scroll).
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 @media (max-width: 768px) {
+  // Stop wide content from creating a page-wide horizontal scroll
+  // that traps the whole viewport ("gets stuck") on mobile.
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  // Let any table wrapper scroll horizontally on small screens.
   .table-container,
-  .table-wrap {
+  .table-wrap,
+  .table-scroll {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch;
   }
 
-  // Make the table itself a scrollable block, but keep the inner
-  // thead/tbody/tr/td as proper table elements so columns still
-  // render correctly. Using width: max-content with min-width: 100%
-  // lets the inner table grow as wide as its content while still
-  // filling the viewport when there's room.
+  // Keep data tables as real tables (so header and body columns stay
+  // aligned) but prevent cell wrapping so the table keeps its natural
+  // width and scrolls inside its wrapper instead of cramping.
   .data-table {
-    display: block;
     width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
 
-    thead,
-    tbody {
-      display: table;
-      width: max-content;
-      min-width: 100%;
-      table-layout: auto;
-      border-collapse: collapse;
-    }
-
-    tr { display: table-row; }
-    th, td {
-      display: table-cell;
+    th,
+    td {
       white-space: nowrap;
       padding: 0.55rem 0.7rem !important;
       font-size: 0.78rem !important;

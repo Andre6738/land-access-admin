@@ -33,37 +33,39 @@
     {{ totalElements }} user{{ totalElements === 1 ? '' : 's' }} found
   </div>
 
-  <table *ngIf="!loading && users.length" class="data-table">
-    <thead>
-      <tr>
-        <th>Email</th>
-        <th>Status</th>
-        <th>Credits</th>
-        <th>Total Paid</th>
-        <th>Created</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let u of users">
-        <td>{{ u.email }}</td>
-        <td>
-          <span class="status-badge" [class]="u.status?.toLowerCase()">{{ u.status }}</span>
-        </td>
-        <td>{{ u.balanceCredits ?? 0 }}</td>
-        <td>R {{ ((u.totalMoneyPaidCents ?? 0) / 100).toFixed(2) }}</td>
-        <td>{{ u.createdAt | date:'d MMM y' }}</td>
-        <td class="actions">
-          <button class="btn-small btn-txn" (click)="openTransactions(u.email)">Transactions</button>
-          <button class="btn-small btn-grant" (click)="openGrant(u.email)">Grant</button>
-          <button class="btn-small btn-deduct" (click)="openDeduct(u.email)">Deduct</button>
-          <button *ngIf="u.status !== 'BANNED'" class="btn-small btn-ban" (click)="ban(u.email)">Ban</button>
-          <button *ngIf="u.status === 'BANNED'" class="btn-small btn-unban" (click)="unban(u.email)">Unban</button>
-          <button class="btn-small btn-delete" (click)="openHardDelete(u.email)" title="Permanently delete user and all their data">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-scroll" *ngIf="!loading && users.length">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Credits</th>
+          <th>Total Paid</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of users">
+          <td>{{ u.email }}</td>
+          <td>
+            <span class="status-badge" [class]="u.status?.toLowerCase()">{{ u.status }}</span>
+          </td>
+          <td>{{ u.balanceCredits ?? 0 }}</td>
+          <td>R {{ ((u.totalMoneyPaidCents ?? 0) / 100).toFixed(2) }}</td>
+          <td>{{ u.createdAt | date:'d MMM y' }}</td>
+          <td class="actions">
+            <button class="btn-small btn-txn" (click)="openTransactions(u.email)">Transactions</button>
+            <button class="btn-small btn-grant" (click)="openGrant(u.email)">Grant</button>
+            <button class="btn-small btn-deduct" (click)="openDeduct(u.email)">Deduct</button>
+            <button *ngIf="u.status !== 'BANNED'" class="btn-small btn-ban" (click)="ban(u.email)">Ban</button>
+            <button *ngIf="u.status === 'BANNED'" class="btn-small btn-unban" (click)="unban(u.email)">Unban</button>
+            <button class="btn-small btn-delete" (click)="openHardDelete(u.email)" title="Permanently delete user and all their data">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div *ngIf="!loading && !users.length" class="empty">No users found.</div>
 

@@ -136,34 +136,36 @@
 
     <div *ngIf="usersLoading" class="loading">Loading users...</div>
 
-    <table *ngIf="!usersLoading && users.length" class="data-table">
-      <thead>
-        <tr>
-          <th style="width:40px">
-            <input type="checkbox" [checked]="selectAll" (change)="toggleSelectAll()" />
-          </th>
-          <th>Email</th>
-          <th>Newsletter</th>
-          <th>Credits</th>
-          <th>Joined</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let u of users" [class.selected-row]="isSelected(u.email)">
-          <td>
-            <input type="checkbox" [checked]="isSelected(u.email)" (change)="toggleSelect(u.email)" />
-          </td>
-          <td>{{ u.email }}</td>
-          <td>
-            <span class="opt-badge" [class.opted-in]="u.newsletterOptIn" [class.opted-out]="!u.newsletterOptIn">
-              {{ u.newsletterOptIn ? 'Subscribed' : 'Unsubscribed' }}
-            </span>
-          </td>
-          <td>{{ u.balanceCredits ?? 0 }}</td>
-          <td>{{ u.createdAt | date:'d MMM y' }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-scroll" *ngIf="!usersLoading && users.length">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width:40px">
+              <input type="checkbox" [checked]="selectAll" (change)="toggleSelectAll()" />
+            </th>
+            <th>Email</th>
+            <th>Newsletter</th>
+            <th>Credits</th>
+            <th>Joined</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of users" [class.selected-row]="isSelected(u.email)">
+            <td>
+              <input type="checkbox" [checked]="isSelected(u.email)" (change)="toggleSelect(u.email)" />
+            </td>
+            <td>{{ u.email }}</td>
+            <td>
+              <span class="opt-badge" [class.opted-in]="u.newsletterOptIn" [class.opted-out]="!u.newsletterOptIn">
+                {{ u.newsletterOptIn ? 'Subscribed' : 'Unsubscribed' }}
+              </span>
+            </td>
+            <td>{{ u.balanceCredits ?? 0 }}</td>
+            <td>{{ u.createdAt | date:'d MMM y' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <div *ngIf="!usersLoading && !users.length" class="empty">No users found.</div>
 

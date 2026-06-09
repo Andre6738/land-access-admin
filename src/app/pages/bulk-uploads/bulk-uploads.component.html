@@ -38,34 +38,36 @@
     {{ totalElements }} result{{ totalElements === 1 ? '' : 's' }} found
   </div>
 
-  <table *ngIf="!loading && records.length" class="data-table">
-    <thead>
-      <tr>
-        <th>Email</th>
-        <th>Name</th>
-        <th>Group</th>
-        <th>Status</th>
-        <th>LPIs</th>
-        <th>OK</th>
-        <th>Fail</th>
-        <th>Credits</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let r of records">
-        <td>{{ r.email }}</td>
-        <td>{{ r.name }}</td>
-        <td>{{ r.templateGroup }}</td>
-        <td><span class="badge" [ngClass]="statusClass(r.status)">{{ r.status }}</span></td>
-        <td>{{ r.totalLpiCodes }}</td>
-        <td>{{ r.successfulCount }}</td>
-        <td>{{ r.failedCount }}</td>
-        <td>{{ r.totalCostCredits }}</td>
-        <td>{{ r.createdAt | date:'d MMM y HH:mm' }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-scroll" *ngIf="!loading && records.length">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Group</th>
+          <th>Status</th>
+          <th>LPIs</th>
+          <th>OK</th>
+          <th>Fail</th>
+          <th>Credits</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of records">
+          <td>{{ r.email }}</td>
+          <td>{{ r.name }}</td>
+          <td>{{ r.templateGroup }}</td>
+          <td><span class="badge" [ngClass]="statusClass(r.status)">{{ r.status }}</span></td>
+          <td>{{ r.totalLpiCodes }}</td>
+          <td>{{ r.successfulCount }}</td>
+          <td>{{ r.failedCount }}</td>
+          <td>{{ r.totalCostCredits }}</td>
+          <td>{{ r.createdAt | date:'d MMM y HH:mm' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div *ngIf="!loading && !records.length" class="empty">No bulk uploads found.</div>
 
